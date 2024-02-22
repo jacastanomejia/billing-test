@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  mysqldb:
+    image: mysql
+    ports:
+      - 3306:3306
+    networks:
+      - springapimysql-net
+    environment:
+      MYSQL_DATABASE: facturacion
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./sql/scheme.sql:/docker-entrypoint-initdb.d/setup.sql
+      - dbdata:/var/lib/mysql
+
+  api_service:
+    build: .
+    ports:
+      - 8080:8080
+    networks:
+      - springapimysql-net
+    environment:
+      - spring.datasource.url=jdbc:mysql://mysqldb:3306/facturacion?allowPublicKeyRetrieval=true&useSSL=false
+    depends_on:
+      - mysqldb
+    volumes:
+      - .m2:/root/.m2
+
+volumes:
+  dbdata:
+
+networks:
+  springapimysql-net:

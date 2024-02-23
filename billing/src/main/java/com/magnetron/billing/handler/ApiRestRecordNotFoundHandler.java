@@ -22,6 +22,6 @@ public class ApiRestRecordNotFoundHandler {
         map.put("status", e.getStatus());
         map.put("message", e.getMessage());
 
-        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
     }
 }

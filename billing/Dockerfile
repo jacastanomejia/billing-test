@@ -1,9 +1,6 @@
-# Use an official Tomcat runtime as a parent image
-FROM openjdk:17
-
+FROM maven:3.8.3-openjdk-17 AS build
+COPY src /home/app/src
+COPY pom.xml /home/app
+RUN mvn -f /home/app/pom.xml clean package
 EXPOSE 8080
-
-# Copy the webapp JAR file to the webapps directory
-ADD /target/*.jar app.jar
-
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["java","-jar","/home/app/target/billing-0.0.1-SNAPSHOT.jar"]

@@ -100,6 +100,10 @@ Este comando detendrá y eliminará los contenedores de la aplicación.
 
 - Puedes personalizar la configuración de la aplicación Spring Boot mediante archivos `application.properties`, `docker-compose.yml` o Dockerfile según sea necesario.
 
+## Notas Adicionales
+
+- Para propósito de la prueba la base de datos es inicializada inicialmente con datos falsos.
+
 ¡Listo! Tu aplicación de facturación de productos desarrollada en Spring Boot debería estar ahora desplegada y accesible a través de Docker Compose.
 
 

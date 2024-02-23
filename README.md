@@ -82,7 +82,7 @@ Asegúrate de que todos los contenedores estén en estado "Up".
 
 ### Paso 5: Acceder a la Aplicación
 
-Abre tu navegador y accede a [http://localhost:8080]/docs.html), donde "puerto" es el puerto especificado en el archivo `docker-compose.yml`.
+Abre tu navegador y accede a http://localhost:8080/docs.html, donde "puerto" es el puerto especificado en el archivo `docker-compose.yml`.
 
 ### Paso 6: Detener y Limpiar los Contenedores
 

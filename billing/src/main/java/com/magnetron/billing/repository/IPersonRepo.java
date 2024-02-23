@@ -1,6 +1,6 @@
 package com.magnetron.billing.repository;
 
-import com.magnetron.billing.repository.model.Person;
+import com.magnetron.billing.repository.entity.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

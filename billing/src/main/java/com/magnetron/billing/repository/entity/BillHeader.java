@@ -1,4 +1,4 @@
-package com.magnetron.billing.repository.model;
+package com.magnetron.billing.repository.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;

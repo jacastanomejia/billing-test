@@ -17,7 +17,6 @@ public class ApiRestExceptionHandler {
 
     @ExceptionHandler(value = {
             IncompleteDataRequiredException.class,
-            RecordNotFoundException.class,
             DataValidationException.class
     })
     public ResponseEntity<Object> handlerApiRequestException(ApiRestRuntimeException e){

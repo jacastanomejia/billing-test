@@ -10,7 +10,14 @@ public class RecordNotFoundException extends ApiRestRuntimeException {
 	@Serial
 	private static final long serialVersionUID = -8918136139277701834L;
 
-	public RecordNotFoundException(InnerError innerError) {
-		super(innerError);
+	private final String elementName;
+
+	public RecordNotFoundException(InnerError innerError, String elementName) {
+		super(innerError, "El registro a modificar no se encuentra en BD");
+		this.elementName = elementName;
+	}
+
+	public String getElementName() {
+		return elementName;
 	}
 }

@@ -1,6 +1,7 @@
 package com.magnetron.billing.service;
 
 
+import com.magnetron.billing.enumeration.DomainName;
 import com.magnetron.billing.enumeration.InnerError;
 import com.magnetron.billing.exception.ApiRestRuntimeException;
 import com.magnetron.billing.repository.IProductRepo;
@@ -8,7 +9,7 @@ import com.magnetron.billing.repository.entity.Product;
 import com.magnetron.billing.service.contract.IProductService;
 import com.magnetron.billing.service.dto.ProductDto;
 import com.magnetron.billing.service.exception.IncompleteDataRequiredException;
-import com.magnetron.billing.service.exception.ReferenceNotFoundException;
+import com.magnetron.billing.service.exception.RecordNotFoundException;
 import com.magnetron.billing.util.DataMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -57,7 +58,7 @@ public class ProductService implements IProductService {
 
 		Optional<Product> product = productRepo.findById(id);
 		if(product.isEmpty())
-			throw new ReferenceNotFoundException(InnerError.RECORD_NOT_FOUND, Product.class.toString());
+			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.Product.getMessage());
 
 		return  mapper.map(product.get(), ProductDto.class);
 	}
@@ -93,7 +94,7 @@ public class ProductService implements IProductService {
 
 		Optional<Product> oldProduct = productRepo.findById(id);
 		if(oldProduct.isEmpty())
-			throw new ReferenceNotFoundException(InnerError.RECORD_NOT_FOUND, Product.class.toString());
+			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.Product.getMessage());
 
 		ModelMapper modelMapper = new ModelMapper();
 		Product product = oldProduct.get();
@@ -117,7 +118,7 @@ public class ProductService implements IProductService {
 
 		Optional<Product> product = productRepo.findById(id);
 		if(product.isEmpty())
-			throw new ReferenceNotFoundException(InnerError.RECORD_NOT_FOUND, Product.class.toString());
+			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.Product.getMessage());
 
 		productRepo.deleteById(id);
 		return true;

@@ -13,7 +13,7 @@ public class ReferenceNotFoundException extends ApiRestRuntimeException {
 	private final String referenceName;
 
 	public ReferenceNotFoundException(InnerError innerError, String referenceName) {
-		super(innerError);
+		super(innerError, "No se encuentra el objeto referido en la solicitud");
 		this.referenceName = referenceName;
 	}
 

@@ -1,9 +1,7 @@
 package com.magnetron.billing.handler;
 
-import com.magnetron.billing.controller.exception.DataValidationException;
 import com.magnetron.billing.exception.ApiRestRuntimeException;
 import com.magnetron.billing.service.exception.IncompleteDataRequiredException;
-import com.magnetron.billing.service.exception.RecordNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,11 +11,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
-public class ApiRestExceptionHandler {
+public class ApiRestIncompleteDataExceptionHandler {
 
     @ExceptionHandler(value = {
-            IncompleteDataRequiredException.class,
-            DataValidationException.class
+            IncompleteDataRequiredException.class
     })
     public ResponseEntity<Object> handlerApiRequestException(ApiRestRuntimeException e){
         Map<String, Object> map = new HashMap<String, Object>();

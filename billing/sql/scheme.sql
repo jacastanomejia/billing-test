@@ -61,14 +61,14 @@ CREATE TABLE fact_detalle (
 -- VIEWS
 -- Esta vista calcula el total de ventas por persona, sumando las cantidades
 --	multiplicadas por los precios de los productos vendidos.
-CREATE VIEW Vista_TotalVentas AS
+CREATE VIEW vista_total_ventas AS
 SELECT
 	person.per_id,
 	person.per_nombre,
 	person.per_apellido,
 	person.per_tipo_documento,
 	person.per_documento,
-    COALESCE(SUM(detal.fdet_cantidad * product.prod_precio),0) AS Total
+    COALESCE(SUM(detal.fdet_cantidad * product.prod_precio),0) AS per_total
 
 FROM persona AS person
 	LEFT JOIN fact_encabezado AS enc ON enc.z_per_id = person.per_id
@@ -78,8 +78,8 @@ FROM persona AS person
 GROUP BY person.per_id;
 
 
--- Esta vista identifica el producto más caro comprado por cada persona.
-CREATE VIEW Vista_productoMasCaro AS
+-- Esta vista extrae la lista de personas que han comprado el producto más caro
+CREATE VIEW vista_producto_mas_caro AS
 SELECT
 	person.per_id,
 	person.per_nombre,
@@ -96,16 +96,16 @@ FROM persona AS person
 GROUP BY person.per_id
 HAVING prod_precio = (SELECT MAX(prod_precio) FROM producto);
 
--- Esta vista muestra la cantidad total de cada producto vendido,
+-- Esta vista muestra la cantidad total de cada producto facturado,
 --	ordenada por la cantidad vendida de mayor a menor.
-CREATE VIEW Vista_CantidadVendida AS
+CREATE VIEW vista_cantidad_facturada AS
 SELECT
 	product.prod_id,
 	product.prod_description,
 	product.prod_precio,
 	product.prod_costo,
 	product.prod_um,
-    SUM(detal.fdet_cantidad) as Prod_Cantidad
+    SUM(detal.fdet_cantidad) as prod_cantidad
 
 FROM producto AS product
 	LEFT JOIN fact_detalle AS detal ON detal.z_prod_id = product.prod_id
@@ -115,13 +115,16 @@ ORDER BY Prod_Cantidad DESC;
 
 -- Esta vista calcula la utilidad total por producto,
 --	considerando la diferencia entre el precio de venta y el costo de producción.
-CREATE VIEW Vista_Utilidad AS
+CREATE VIEW vista_utilidad_bruta AS
 SELECT
 	product.prod_id,
 	product.prod_description,
+	product.prod_precio,
+    product.prod_costo,
+    product.prod_um,
     COALESCE(
         SUM(detail.fdet_cantidad*(product.prod_precio-product.prod_costo))
-        , 0) as Prod_Utilidad
+        , 0) as prod_utilidad
 
 FROM producto AS product
 	LEFT JOIN fact_detalle AS detail ON detail.z_prod_id = product.prod_id
@@ -132,13 +135,16 @@ ORDER BY prod_id ASC;
 -- Esta vista calcula el margen de ganancia por producto como un porcentaje,
 --	teniendo en cuenta la diferencia entre el precio de venta y el costo de
 --	producción en relación con el precio de venta.
-CREATE VIEW Vista_MargenGanancia AS
+CREATE VIEW vista_margen_ganancia AS
 SELECT
 	product.prod_id,
 	product.prod_description,
+	product.prod_precio,
+    product.prod_costo,
+    product.prod_um,
     COALESCE(
     	(SUM(detail.fdet_cantidad*(product.prod_precio-product.prod_costo))/SUM(detail.fdet_cantidad*product.prod_precio)) * 100
-        , 0) AS Prod_Margen_Ganancia
+        , 0) AS prod_margen_ganancia
 
 FROM producto AS product
 	LEFT JOIN fact_detalle AS detail ON detail.z_prod_id = product.prod_id

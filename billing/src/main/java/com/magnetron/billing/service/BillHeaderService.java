@@ -116,13 +116,12 @@ public class BillHeaderService implements IBillHeaderService {
 			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.BillHeader.getMessage());
 
 		Optional<Person> person = personRepo.findById(data.getIdPerson());
-		if(person.isEmpty()){
+		if(person.isEmpty())
 			throw new ReferenceNotFoundException(InnerError.REFERENCE_NOT_FOUND, Person.class.toString());
-		}
 
-		ModelMapper modelMapper = new ModelMapper();
 		BillHeader billHeader = oldBillHeader.get();
-		modelMapper.map(data, billHeader);
+		billHeader.setNumber(data.getNumber());
+		billHeader.setDate(data.getDate());
 		billHeader.setPerson(person.get());
 		billHeader = billHeaderRepo.save(billHeader);
 		return mapper.map(billHeader, BillHeaderDto.class);

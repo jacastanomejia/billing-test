@@ -104,6 +104,8 @@ Este comando detendrá y eliminará los contenedores de la aplicación.
 
 - Para propósito de la prueba la base de datos es inicializada inicialmente con datos falsos.
 
+- La cobertura de los test unitarios puede ser consultada en http://localhost:8080/coverage/index.html
+
 ¡Listo! Tu aplicación de facturación de productos desarrollada en Spring Boot debería estar ahora desplegada y accesible a través de Docker Compose.
 
 

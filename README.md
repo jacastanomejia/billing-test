@@ -102,7 +102,9 @@ Este comando detendrá y eliminará los contenedores de la aplicación.
 
 ## Notas Adicionales
 
-- Para propósito de la prueba la base de datos es inicializada inicialmente con datos falsos.
+- Para propósito de la prueba la base de datos es inicializada con datos falsos.
+
+- El archivo de setup con la creación de la BD y las consultas SQL se encuentran en la carpeta billing/sql (https://github.com/jacastanomejia/billing-test/tree/master/billing/sql) del proyecto
 
 - La cobertura de los test unitarios puede ser consultada en http://localhost:8080/coverage/index.html
 

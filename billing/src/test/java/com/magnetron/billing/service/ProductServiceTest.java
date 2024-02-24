@@ -1,13 +1,13 @@
 package com.magnetron.billing.service;
 
+import com.magnetron.billing.enumeration.DomainName;
 import com.magnetron.billing.enumeration.InnerError;
 import com.magnetron.billing.repository.IProductRepo;
 import com.magnetron.billing.repository.entity.Product;
 import com.magnetron.billing.service.dto.ProductDto;
 import com.magnetron.billing.service.exception.IncompleteDataRequiredException;
 import com.magnetron.billing.service.exception.RecordNotFoundException;
-import com.magnetron.billing.service.exception.ReferenceNotFoundException;
-import org.aspectj.lang.annotation.Before;
+import com.magnetron.billing.util.EntityFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -15,8 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
-import org.springframework.test.context.event.annotation.BeforeTestExecution;
 
 import java.util.Optional;
 
@@ -55,7 +53,7 @@ public class ProductServiceTest {
     @Test
     void shouldCreateNewProduct() {
         // given
-        ProductDto productDto = createdProductDtoInstance();
+        ProductDto productDto = (ProductDto) EntityFactory.create(DomainName.Product);
         ModelMapper mapper = new ModelMapper();
         Product product = mapper.map(productDto, Product.class);
         when(iProductRepo.save(any(Product.class)))
@@ -105,7 +103,7 @@ public class ProductServiceTest {
     @Test
     void shouldReturnWhenProductIsFound(){
         // given
-        ProductDto productDto = createdProductDtoInstance();
+        ProductDto productDto = (ProductDto) EntityFactory.create(DomainName.Product);
         ModelMapper mapper = new ModelMapper();
         Product product = mapper.map(productDto, Product.class);
 
@@ -151,7 +149,7 @@ public class ProductServiceTest {
     @Test
     void shouldUpdateProduct(){
         // given
-        ProductDto productDto = createdProductDtoInstanceBySetter();
+        ProductDto productDto = (ProductDto) EntityFactory.create(DomainName.Product);
         ModelMapper mapper = new ModelMapper();
         Product product = mapper.map(productDto, Product.class);
 
@@ -202,7 +200,7 @@ public class ProductServiceTest {
     @Test
     void shouldDeleteProduct(){
         // given
-        ProductDto productDto = createdProductDtoInstanceBySetter();
+        ProductDto productDto = (ProductDto) EntityFactory.create(DomainName.Product);
         ModelMapper mapper = new ModelMapper();
         Product product = mapper.map(productDto, Product.class);
 
@@ -220,22 +218,4 @@ public class ProductServiceTest {
                 .deleteById(anyLong());
     }
 
-    private ProductDto createdProductDtoInstance(){
-        return ProductDto.builder()
-                .description("Shoes")
-                .price(21_000d)
-                .cost(18_000d)
-                .unit("Unidad")
-                .build();
-    }
-
-    private ProductDto createdProductDtoInstanceBySetter(){
-        ProductDto productDto = new ProductDto();
-        productDto.setDescription("Item 1");
-        productDto.setPrice(22_000d);
-        productDto.setCost(12_000d);
-        productDto.setUnit("Unidad");
-
-        return productDto;
-    }
 }

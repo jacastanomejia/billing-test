@@ -1,12 +1,13 @@
 package com.magnetron.billing.service;
 
-import com.magnetron.billing.enumeration.DocumentType;
+import com.magnetron.billing.enumeration.DomainName;
 import com.magnetron.billing.enumeration.InnerError;
 import com.magnetron.billing.repository.IPersonRepo;
 import com.magnetron.billing.repository.entity.Person;
 import com.magnetron.billing.service.dto.PersonDto;
 import com.magnetron.billing.service.exception.IncompleteDataRequiredException;
 import com.magnetron.billing.service.exception.RecordNotFoundException;
+import com.magnetron.billing.util.EntityFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -52,7 +53,7 @@ public class PersonServiceTest {
     @Test
     void shouldCreateNewPerson() {
         // given
-        PersonDto personDto = createdPersonDtoInstance();
+        PersonDto personDto = (PersonDto) EntityFactory.create(DomainName.Person);
         ModelMapper mapper = new ModelMapper();
         Person person = mapper.map(personDto, Person.class);
         when(iPersonRepo.save(any(Person.class)))
@@ -102,7 +103,7 @@ public class PersonServiceTest {
     @Test
     void shouldReturnWhenPersonIsFound(){
         // given
-        PersonDto personDto = createdPersonDtoInstance();
+        PersonDto personDto = (PersonDto) EntityFactory.create(DomainName.Person);
         ModelMapper mapper = new ModelMapper();
         Person person = mapper.map(personDto, Person.class);
 
@@ -148,7 +149,7 @@ public class PersonServiceTest {
     @Test
     void shouldUpdatePerson(){
         // given
-        PersonDto personDto = createdPersonDtoInstanceBySetter();
+        PersonDto personDto = (PersonDto) EntityFactory.create(DomainName.Person);
         ModelMapper mapper = new ModelMapper();
         Person person = mapper.map(personDto, Person.class);
 
@@ -199,7 +200,7 @@ public class PersonServiceTest {
     @Test
     void shouldDeletePerson(){
         // given
-        PersonDto personDto = createdPersonDtoInstanceBySetter();
+        PersonDto personDto = (PersonDto) EntityFactory.create(DomainName.Person);
         ModelMapper mapper = new ModelMapper();
         Person person = mapper.map(personDto, Person.class);
 
@@ -217,21 +218,4 @@ public class PersonServiceTest {
                 .deleteById(anyLong());
     }
 
-    private PersonDto createdPersonDtoInstance(){
-        return PersonDto.builder()
-                .name("Juan")
-                .surname("Perez")
-                .documentType(DocumentType.CC)
-                .documentNumber("2123456")
-                .build();
-    }
-
-    private PersonDto createdPersonDtoInstanceBySetter(){
-        PersonDto personDto = new PersonDto();
-        personDto.setName("Pedro");
-        personDto.setSurname("Medina");
-        personDto.setDocumentType(DocumentType.CC);
-        personDto.setDocumentNumber("542568");
-        return personDto;
-    }
 }

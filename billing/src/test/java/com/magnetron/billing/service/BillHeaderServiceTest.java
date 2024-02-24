@@ -1,6 +1,7 @@
 package com.magnetron.billing.service;
 
 import com.magnetron.billing.enumeration.DocumentType;
+import com.magnetron.billing.enumeration.DomainName;
 import com.magnetron.billing.enumeration.InnerError;
 import com.magnetron.billing.repository.IBillHeaderRepo;
 import com.magnetron.billing.repository.IPersonRepo;
@@ -11,6 +12,7 @@ import com.magnetron.billing.service.dto.PersonDto;
 import com.magnetron.billing.service.exception.IncompleteDataRequiredException;
 import com.magnetron.billing.service.exception.RecordNotFoundException;
 import com.magnetron.billing.service.exception.ReferenceNotFoundException;
+import com.magnetron.billing.util.EntityFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -19,8 +21,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -92,10 +92,10 @@ public class BillHeaderServiceTest {
     void shouldReturnWhenBillHeaderIsFound(){
         // given
         ModelMapper mapper = new ModelMapper();
-        PersonDto personDto = createdPersonDtoInstance();
+        PersonDto personDto = (PersonDto) EntityFactory.create(DomainName.Person);
         Person person = mapper.map(personDto, Person.class);
 
-        BillHeaderDto billHeaderDto = createdBillHeaderDtoInstance();
+        BillHeaderDto billHeaderDto = (BillHeaderDto) EntityFactory.create(DomainName.BillHeader);
         BillHeader billHeader = mapper.map(billHeaderDto, BillHeader.class);
         billHeader.setBillDetails(List.of());
         billHeader.setPerson(person);
@@ -118,7 +118,7 @@ public class BillHeaderServiceTest {
 
         ReferenceNotFoundException exception
                 = assertThrows(ReferenceNotFoundException.class, () -> {
-            service.create(createdBillHeaderDtoInstance());
+            service.create((BillHeaderDto) EntityFactory.create(DomainName.BillHeader));
         });
 
         // then
@@ -130,12 +130,12 @@ public class BillHeaderServiceTest {
     void shouldCreateNewBillHeader() {
         ModelMapper mapper = new ModelMapper();
         // given
-        PersonDto personDto = createdPersonDtoInstance();
+        PersonDto personDto = (PersonDto) EntityFactory.create(DomainName.Person);
         Person person = mapper.map(personDto, Person.class);
         when(iPersonRepo.findById(any()))
                 .thenReturn(Optional.of(person));
 
-        BillHeaderDto billHeaderDto = createdBillHeaderDtoInstance();
+        BillHeaderDto billHeaderDto = (BillHeaderDto) EntityFactory.create(DomainName.BillHeader);
         BillHeader header = mapper.map(billHeaderDto, BillHeader.class);
         when(billHeaderRepo.save(any(BillHeader.class)))
                 .thenReturn(header);
@@ -184,7 +184,7 @@ public class BillHeaderServiceTest {
     @Test
     void shouldFailWhenTryToUpdateButPersonDoesNotExist(){
         ModelMapper mapper = new ModelMapper();
-        BillHeaderDto billHeaderDto = createdBillHeaderDtoInstance();
+        BillHeaderDto billHeaderDto = (BillHeaderDto) EntityFactory.create(DomainName.BillHeader);
         BillHeader billHeader = mapper.map(billHeaderDto, BillHeader.class);
         billHeader.setBillDetails(List.of());
 
@@ -210,10 +210,10 @@ public class BillHeaderServiceTest {
         // given
         ModelMapper mapper = new ModelMapper();
 
-        BillHeaderDto billHeaderDto = createdBillHeaderDtoInstanceBySetter();
+        BillHeaderDto billHeaderDto = (BillHeaderDto) EntityFactory.create(DomainName.BillHeader);
         BillHeader billHeader = mapper.map(billHeaderDto, BillHeader.class);
 
-        PersonDto personDto = createdPersonDtoInstance();
+        PersonDto personDto = (PersonDto) EntityFactory.create(DomainName.Person);
         Person person = mapper.map(personDto, Person.class);
 
         // when
@@ -265,7 +265,7 @@ public class BillHeaderServiceTest {
     @Test
     void shouldDeleteBillHeader(){
         // given
-        BillHeaderDto billHeaderDto = createdBillHeaderDtoInstanceBySetter();
+        BillHeaderDto billHeaderDto = (BillHeaderDto) EntityFactory.create(DomainName.BillHeader);
         ModelMapper mapper = new ModelMapper();
         BillHeader billHeader = mapper.map(billHeaderDto, BillHeader.class);
 
@@ -283,26 +283,5 @@ public class BillHeaderServiceTest {
                 .deleteById(anyLong());
     }
 
-    private BillHeaderDto createdBillHeaderDtoInstance(){
-        return BillHeaderDto.builder()
-                .number(1234567)
-                .date(LocalDateTime.now())
-                .build();
-    }
 
-    private BillHeaderDto createdBillHeaderDtoInstanceBySetter(){
-        BillHeaderDto billHeaderDto = new BillHeaderDto();
-        billHeaderDto.setNumber(234567);
-        billHeaderDto.setDate(LocalDateTime.now());
-        return billHeaderDto;
-    }
-
-    private PersonDto createdPersonDtoInstance(){
-        return PersonDto.builder()
-                .name("Juan")
-                .surname("Perez")
-                .documentType(DocumentType.CC)
-                .documentNumber("2123456")
-                .build();
-    }
 }

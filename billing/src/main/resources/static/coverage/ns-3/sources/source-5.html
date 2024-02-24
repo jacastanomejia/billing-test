@@ -1,0 +1,225 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > QueryRestController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.magnetron.billing.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: QueryRestController (com.magnetron.billing.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">QueryRestController</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.magnetron.billing.controller;
+&nbsp;
+&nbsp;import com.magnetron.billing.enumeration.StatusMessage;
+&nbsp;import com.magnetron.billing.repository.entity.*;
+&nbsp;import com.magnetron.billing.service.contract.*;
+&nbsp;import com.magnetron.billing.util.MessageParse;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.media.Content;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponses;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.CrossOrigin;
+&nbsp;import org.springframework.web.bind.annotation.GetMapping;
+&nbsp;import org.springframework.web.bind.annotation.RequestMapping;
+&nbsp;import org.springframework.web.bind.annotation.RestController;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/api/v1/queries&quot;)
+&nbsp;@CrossOrigin
+<b class="nc">&nbsp;public class QueryRestController {</b>
+&nbsp;
+&nbsp;	@Autowired
+&nbsp;	private ITotalPurchaseByPersonService totalPurchaseService;
+&nbsp;
+&nbsp;	@Autowired
+&nbsp;	private IMoreExpensivePurchaseService serviceMostExpensive;
+&nbsp;
+&nbsp;	@Autowired
+&nbsp;	private IQuantityInvoicedProductService serviceQuantityInvoiced;
+&nbsp;
+&nbsp;	@Autowired
+&nbsp;	private IGrossProfitProductService grossProfitProductService;
+&nbsp;
+&nbsp;	@Autowired
+&nbsp;	private IMarginProfitProductService marginProfitProductService;
+&nbsp;
+&nbsp;	@Operation(
+&nbsp;			summary = &quot;Personas con total facturado&quot;,
+&nbsp;			description = &quot;Lista de todas las personas con el total facturado de cada una.&quot;
+&nbsp;	)
+&nbsp;	@ApiResponses(value = {
+&nbsp;			@ApiResponse(
+&nbsp;					responseCode = &quot;200&quot;,
+&nbsp;					description = &quot;Lista recuperada con éxito&quot;,
+&nbsp;					content = @Content(mediaType = &quot;application/json&quot;)),
+&nbsp;	})
+&nbsp;	@GetMapping(path=&quot;/people/total-purchase&quot;)
+&nbsp;	public ResponseEntity&lt;Object&gt; getAllPeopleWithTotalPurchase(){
+<b class="nc">&nbsp;		List&lt;PersonWithTotalPurchase&gt; result  = totalPurchaseService.getAll();</b>
+<b class="nc">&nbsp;		return MessageParse.generateResponse(StatusMessage.OK.toString(), HttpStatus.OK, result);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@Operation(
+&nbsp;			summary = &quot;Personas que han comprado el producto mas costos&quot;,
+&nbsp;			description = &quot;Lista de todas las personas que han comprado el producto más costoso.&quot;
+&nbsp;	)
+&nbsp;	@ApiResponses(value = {
+&nbsp;			@ApiResponse(
+&nbsp;					responseCode = &quot;200&quot;,
+&nbsp;					description = &quot;Lista recuperada con éxito&quot;,
+&nbsp;					content = @Content(mediaType = &quot;application/json&quot;)),
+&nbsp;	})
+&nbsp;	@GetMapping(path=&quot;/people/more-expensive-purchase&quot;)
+&nbsp;	public ResponseEntity&lt;Object&gt; getAllPeopleBuyingMostExpensive(){
+<b class="nc">&nbsp;		List&lt;PersonMoreExpensivePurchase&gt; result  = serviceMostExpensive.getAll();</b>
+<b class="nc">&nbsp;		return MessageParse.generateResponse(StatusMessage.OK.toString(), HttpStatus.OK, result);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@Operation(
+&nbsp;			summary = &quot;Cantidades facturadas de productos&quot;,
+&nbsp;			description = &quot;Lista de productos con el total de las cantidades facturadas de cada uno y ordenada&quot;
+&nbsp;	)
+&nbsp;	@ApiResponses(value = {
+&nbsp;			@ApiResponse(
+&nbsp;					responseCode = &quot;200&quot;,
+&nbsp;					description = &quot;Lista recuperada con éxito&quot;,
+&nbsp;					content = @Content(mediaType = &quot;application/json&quot;)),
+&nbsp;	})
+&nbsp;	@GetMapping(path=&quot;/products/quantity-invoiced&quot;)
+&nbsp;	public ResponseEntity&lt;Object&gt; getAllProductInvoiced(){
+<b class="nc">&nbsp;		List&lt;ProductWithQuantityInvoiced&gt; result  = serviceQuantityInvoiced.getAll();</b>
+<b class="nc">&nbsp;		return MessageParse.generateResponse(StatusMessage.OK.toString(), HttpStatus.OK, result);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@Operation(
+&nbsp;			summary = &quot;Utilidad bruta&quot;,
+&nbsp;			description = &quot;Lista de productos con la utilidad bruta generada de cada uno&quot;
+&nbsp;	)
+&nbsp;	@ApiResponses(value = {
+&nbsp;			@ApiResponse(
+&nbsp;					responseCode = &quot;200&quot;,
+&nbsp;					description = &quot;Lista recuperada con éxito&quot;,
+&nbsp;					content = @Content(mediaType = &quot;application/json&quot;)),
+&nbsp;	})
+&nbsp;	@GetMapping(path=&quot;/products/gross-profit&quot;)
+&nbsp;	public ResponseEntity&lt;Object&gt; getAllProductWithGrossProfit(){
+<b class="nc">&nbsp;		List&lt;ProductWithGrossProfit&gt; result  = grossProfitProductService.getAll();</b>
+<b class="nc">&nbsp;		return MessageParse.generateResponse(StatusMessage.OK.toString(), HttpStatus.OK, result);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@Operation(
+&nbsp;			summary = &quot;Margen de utilidad&quot;,
+&nbsp;			description = &quot;Lista de productos con el margen de utilidad generada de cada uno&quot;
+&nbsp;	)
+&nbsp;	@ApiResponses(value = {
+&nbsp;			@ApiResponse(
+&nbsp;					responseCode = &quot;200&quot;,
+&nbsp;					description = &quot;Lista recuperada con éxito&quot;,
+&nbsp;					content = @Content(mediaType = &quot;application/json&quot;)),
+&nbsp;	})
+&nbsp;	@GetMapping(path=&quot;/products/margin-profit&quot;)
+&nbsp;	public ResponseEntity&lt;Object&gt; getAllProductWithMarginProfit(){
+<b class="nc">&nbsp;		List&lt;ProductWithMarginProfit&gt; result  = marginProfitProductService.getAll();</b>
+<b class="nc">&nbsp;		return MessageParse.generateResponse(StatusMessage.OK.toString(), HttpStatus.OK, result);</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-02-23 22:55</div>
+</div>
+</body>
+</html>

@@ -1,6 +1,5 @@
 package com.magnetron.billing.service;
 
-import com.magnetron.billing.enumeration.DocumentType;
 import com.magnetron.billing.enumeration.DomainName;
 import com.magnetron.billing.enumeration.InnerError;
 import com.magnetron.billing.repository.IBillHeaderRepo;
@@ -295,6 +294,5 @@ public class BillHeaderServiceTest {
         verify(billHeaderRepo, times(1))
                 .deleteById(anyLong());
     }
-
 
 }

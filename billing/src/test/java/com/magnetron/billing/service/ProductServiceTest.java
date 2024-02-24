@@ -3,7 +3,6 @@ package com.magnetron.billing.service;
 import com.magnetron.billing.enumeration.DomainName;
 import com.magnetron.billing.enumeration.InnerError;
 import com.magnetron.billing.repository.IProductRepo;
-import com.magnetron.billing.repository.entity.Person;
 import com.magnetron.billing.repository.entity.Product;
 import com.magnetron.billing.service.dto.ProductDto;
 import com.magnetron.billing.service.exception.IncompleteDataRequiredException;

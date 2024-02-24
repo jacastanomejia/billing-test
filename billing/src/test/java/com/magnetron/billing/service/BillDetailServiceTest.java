@@ -1,6 +1,5 @@
 package com.magnetron.billing.service;
 
-import com.magnetron.billing.enumeration.DocumentType;
 import com.magnetron.billing.enumeration.DomainName;
 import com.magnetron.billing.enumeration.InnerError;
 import com.magnetron.billing.repository.IBillDetailRepo;
@@ -8,11 +7,9 @@ import com.magnetron.billing.repository.IBillHeaderRepo;
 import com.magnetron.billing.repository.IProductRepo;
 import com.magnetron.billing.repository.entity.BillDetail;
 import com.magnetron.billing.repository.entity.BillHeader;
-import com.magnetron.billing.repository.entity.Person;
 import com.magnetron.billing.repository.entity.Product;
 import com.magnetron.billing.service.dto.BillDetailDto;
 import com.magnetron.billing.service.dto.BillHeaderDto;
-import com.magnetron.billing.service.dto.PersonDto;
 import com.magnetron.billing.service.dto.ProductDto;
 import com.magnetron.billing.service.exception.IncompleteDataRequiredException;
 import com.magnetron.billing.service.exception.RecordNotFoundException;
@@ -27,7 +24,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -157,7 +153,7 @@ public class BillDetailServiceTest {
 
     @Test
     void shouldCreateNewBillDetail() {
-        BillDetailDto billDetailDto = createdBillDetailDtoInstance();
+        BillDetailDto billDetailDto = (BillDetailDto) EntityFactory.create(DomainName.BillDetail);
         BillDetail detail = modelMapper.map(billDetailDto, BillDetail.class);
 
         BillHeaderDto billHeaderDto = (BillHeaderDto) EntityFactory.create(DomainName.BillHeader);
@@ -315,13 +311,5 @@ public class BillDetailServiceTest {
         verify(billDetailRepo, times(1))
                 .deleteById(anyLong());
     }
-
-    private BillDetailDto createdBillDetailDtoInstance(){
-        return BillDetailDto.builder()
-                .line("Item1")
-                .quantity(20)
-                .build();
-    }
-
 
 }

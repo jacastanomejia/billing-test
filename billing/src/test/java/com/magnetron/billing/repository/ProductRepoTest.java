@@ -20,21 +20,38 @@ public class ProductRepoTest {
     }
 
     @Test
-    void itShouldHaveAProductWithStock(){
-
-        Product product = createdInstance();
+    void shouldFindAProductById(){
+        // given two products
+        Product product = createdInstanceBuilder();
+        iProductRepo.save(createdInstanceBySetter());
         iProductRepo.save(product);
-        Optional<Product> p2 = iProductRepo.findById(product.getId());
-        Assertions.assertThat(p2.isEmpty()).isFalse();
 
+        // when
+        Optional<Product> p2 = iProductRepo.findById(2L);
+
+        //then
+        Assertions.assertThat(p2.isEmpty()).isFalse();
+        Assertions.assertThat(p2.get().getDescription()).isEqualTo(product.getDescription());
+        Assertions.assertThat(p2.get().getPrice()).isEqualTo(product.getPrice());
+        Assertions.assertThat(p2.get().getCost()).isEqualTo(product.getCost());
+        Assertions.assertThat(p2.get().getUnit()).isEqualTo(product.getUnit());
     }
 
-    private Product createdInstance(){
+    private Product createdInstanceBuilder(){
         return Product.builder()
-                .description("Transformador de Potencia 500 kVA'")
+                .description("Transformador de Potencia 500 kVA")
                 .price(21_000_000d)
                 .cost(16_000_000d)
                 .unit("Unidad")
                 .build();
+    }
+
+    private Product createdInstanceBySetter(){
+        Product product = new Product();
+        product.setDescription("Transformador de Fase 500 kVA");
+        product.setCost(8_000_000d);
+        product.setPrice(11_000_000d);
+        product.setUnit("Unidad");
+        return product;
     }
 }

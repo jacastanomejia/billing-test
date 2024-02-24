@@ -20,22 +20,39 @@ public class PersonRepoTest {
     }
 
     @Test
-    void itShouldHaveAProductWithStock(){
-
-        Person person = createdInstance();
+    void shouldFindPersonByDocumentNumber(){
+        // give two people
+        Person person = createdInstanceByBuilder();
         iPersonRepo.save(person);
-        Optional<Person> p2 = iPersonRepo.findByDocumentNumber(person.getDocumentNumber());
-        Assertions.assertThat(p2.isEmpty()).isFalse();
-        Assertions.assertThat(p2.get().getDocumentNumber()).isEqualTo(person.getDocumentNumber());
+        iPersonRepo.save(createdInstanceBySetter());
 
+        // when consulted by document number
+        Optional<Person> p2 = iPersonRepo.findByDocumentNumber(person.getDocumentNumber());
+
+        // then
+        Assertions.assertThat(p2.isEmpty()).isFalse();
+        Assertions.assertThat(p2.get().getId()).isNotNull().isPositive();
+        Assertions.assertThat(p2.get().getName()).isEqualTo(person.getName());
+        Assertions.assertThat(p2.get().getSurname()).isEqualTo(person.getSurname());
+        Assertions.assertThat(p2.get().getDocumentType()).isEqualTo(person.getDocumentType());
+        Assertions.assertThat(p2.get().getDocumentNumber()).isEqualTo(person.getDocumentNumber());
     }
 
-    private Person createdInstance(){
+    private Person createdInstanceByBuilder(){
         return Person.builder()
                 .name("Javier Antonio")
                 .surname("Medina Sanchez")
                 .documentNumber("123456789")
                 .documentType("CC")
                 .build();
+    }
+
+    private Person createdInstanceBySetter(){
+        Person person = new Person();
+        person.setName("Jesus");
+        person.setSurname("Sanchez");
+        person.setDocumentType("CC");
+        person.setDocumentNumber("4321234");
+        return person;
     }
 }

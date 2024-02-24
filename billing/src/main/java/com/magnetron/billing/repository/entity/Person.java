@@ -1,5 +1,6 @@
 package com.magnetron.billing.repository.entity;
 
+import com.magnetron.billing.enumeration.DocumentType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -35,9 +36,8 @@ public class Person {
     private String surname;
 
     @Column(name = "per_tipo_documento")
-    @NotEmpty
-    @Size(max = 4)
-    private String documentType;
+    @Enumerated(EnumType.STRING)
+    private DocumentType documentType;
 
     @Column(name = "per_documento")
     @NotEmpty

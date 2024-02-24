@@ -102,9 +102,11 @@ public class PersonService implements IPersonService {
 		if(oldPerson.isEmpty())
 			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.Person.getMessage());
 
-		ModelMapper modelMapper = new ModelMapper();
 		Person person = oldPerson.get();
-		modelMapper.map(data, person);
+		person.setName(data.getName());
+		person.setSurname(data.getSurname());
+		person.setDocumentType(data.getDocumentType());
+		person.setDocumentNumber(data.getDocumentNumber());
 		person = personRepo.save(person);
 		return mapper.map(person, PersonDto.class);
 	}

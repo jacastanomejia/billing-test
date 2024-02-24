@@ -1,5 +1,6 @@
 package com.magnetron.billing.repository;
 
+import com.magnetron.billing.enumeration.DocumentType;
 import com.magnetron.billing.repository.entity.Person;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -43,7 +44,7 @@ public class PersonRepoTest {
                 .name("Javier Antonio")
                 .surname("Medina Sanchez")
                 .documentNumber("123456789")
-                .documentType("CC")
+                .documentType(DocumentType.CC)
                 .build();
     }
 
@@ -51,7 +52,7 @@ public class PersonRepoTest {
         Person person = new Person();
         person.setName("Jesus");
         person.setSurname("Sanchez");
-        person.setDocumentType("CC");
+        person.setDocumentType(DocumentType.CE);
         person.setDocumentNumber("4321234");
         return person;
     }

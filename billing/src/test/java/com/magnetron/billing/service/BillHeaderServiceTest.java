@@ -12,6 +12,7 @@ import com.magnetron.billing.service.dto.PersonDto;
 import com.magnetron.billing.service.exception.IncompleteDataRequiredException;
 import com.magnetron.billing.service.exception.RecordNotFoundException;
 import com.magnetron.billing.service.exception.ReferenceNotFoundException;
+import com.magnetron.billing.util.DataMapper;
 import com.magnetron.billing.util.EntityFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,7 @@ public class BillHeaderServiceTest {
     @InjectMocks
     private BillHeaderService service;
 
+    private final int SIZE = 10;
 
     @BeforeEach
     void setUp(){
@@ -52,11 +54,22 @@ public class BillHeaderServiceTest {
 
     @Test
     void canGetAllBillHeader() {
+        // given
+        List<?> billHeadersDto = EntityFactory.getList(DomainName.BillHeader, SIZE);
+        List<BillHeader> billHeaders = DataMapper.mapList(billHeadersDto, BillHeader.class);
+
         // when
-        service.getAll();
+        when(billHeaderRepo.findAll())
+                .thenReturn(billHeaders);
+        List<?> result = service.getAll();
 
         // then
-        verify(billHeaderRepo).findAll();
+        assertThat(result)
+                .isNotNull();
+        assertThat(result.size())
+                .isEqualTo(SIZE);
+        verify(billHeaderRepo, times(1))
+                .findAll();
     }
 
     @Test

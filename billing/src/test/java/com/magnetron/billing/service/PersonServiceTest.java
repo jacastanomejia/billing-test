@@ -3,10 +3,12 @@ package com.magnetron.billing.service;
 import com.magnetron.billing.enumeration.DomainName;
 import com.magnetron.billing.enumeration.InnerError;
 import com.magnetron.billing.repository.IPersonRepo;
+import com.magnetron.billing.repository.entity.BillDetail;
 import com.magnetron.billing.repository.entity.Person;
 import com.magnetron.billing.service.dto.PersonDto;
 import com.magnetron.billing.service.exception.IncompleteDataRequiredException;
 import com.magnetron.billing.service.exception.RecordNotFoundException;
+import com.magnetron.billing.util.DataMapper;
 import com.magnetron.billing.util.EntityFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -27,13 +30,14 @@ import static org.mockito.Mockito.*;
 public class PersonServiceTest {
 
     @Mock
-    private IPersonRepo iPersonRepo;
+    private IPersonRepo personRepo;
 
     private ModelMapper modelMapper;
 
     @InjectMocks
     private PersonService service;
 
+    private final int SIZE = 10;
 
     @BeforeEach
     void setUp(){
@@ -43,11 +47,22 @@ public class PersonServiceTest {
 
     @Test
     void canGetAllPerson() {
+        // given
+        List<?> peopleDto = EntityFactory.getList(DomainName.BillDetail, SIZE);
+        List<Person> people = DataMapper.mapList(peopleDto, Person.class);
+
         // when
-        service.getAll();
+        when(personRepo.findAll())
+                .thenReturn(people);
+        List<?> result = service.getAll();
 
         // then
-        verify(iPersonRepo).findAll();
+        assertThat(result)
+                .isNotNull();
+        assertThat(result.size())
+                .isEqualTo(SIZE);
+        verify(personRepo, times(1))
+                .findAll();
     }
 
     @Test
@@ -56,7 +71,7 @@ public class PersonServiceTest {
         PersonDto personDto = (PersonDto) EntityFactory.create(DomainName.Person);
         ModelMapper mapper = new ModelMapper();
         Person person = mapper.map(personDto, Person.class);
-        when(iPersonRepo.save(any(Person.class)))
+        when(personRepo.save(any(Person.class)))
                 .thenReturn(person);
 
         // when
@@ -64,7 +79,7 @@ public class PersonServiceTest {
 
         // then
         ArgumentCaptor<Person> personArgumentCaptor = ArgumentCaptor.forClass(Person.class);
-        verify(iPersonRepo).save(personArgumentCaptor.capture());
+        verify(personRepo).save(personArgumentCaptor.capture());
         Person innerPerson = personArgumentCaptor.getValue();
         assertThat(innerPerson)
                 .isNotNull();
@@ -87,7 +102,7 @@ public class PersonServiceTest {
     @Test
     void shouldFailWhenPersonDoesNotExist(){
         // when
-        when(iPersonRepo.findById(anyLong()))
+        when(personRepo.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
         RecordNotFoundException exception
@@ -108,7 +123,7 @@ public class PersonServiceTest {
         Person person = mapper.map(personDto, Person.class);
 
         // when
-        when(iPersonRepo.findById(anyLong()))
+        when(personRepo.findById(anyLong()))
                 .thenReturn(Optional.of(person));
         PersonDto resultDto = service.getById(1L);
 
@@ -133,7 +148,7 @@ public class PersonServiceTest {
     @Test
     void shouldFailWhenTryToUpdateButPersonDoesNotExist(){
         // when
-        when(iPersonRepo.findById(anyLong()))
+        when(personRepo.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
         RecordNotFoundException exception
@@ -154,11 +169,11 @@ public class PersonServiceTest {
         Person person = mapper.map(personDto, Person.class);
 
         // when
-        when(iPersonRepo.findById(anyLong()))
+        when(personRepo.findById(anyLong()))
                 .thenReturn(Optional.of(person));
 
         person.setName("Daniel");
-        when(iPersonRepo.save(person))
+        when(personRepo.save(person))
                 .thenReturn(person);
 
         personDto = service.update(1L, personDto);
@@ -183,7 +198,7 @@ public class PersonServiceTest {
     @Test
     void shouldFailWhenIdIsNotFoundAndTryToDeletePerson(){
         // when
-        when(iPersonRepo.findById(anyLong()))
+        when(personRepo.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
         // when
@@ -205,7 +220,7 @@ public class PersonServiceTest {
         Person person = mapper.map(personDto, Person.class);
 
         // when
-        when(iPersonRepo.findById(anyLong()))
+        when(personRepo.findById(anyLong()))
                 .thenReturn(Optional.of(person));
 
         boolean result = service.delete(1L);
@@ -214,7 +229,7 @@ public class PersonServiceTest {
         assertThat(result)
                 .isEqualTo(true);
 
-        verify(iPersonRepo, times(1))
+        verify(personRepo, times(1))
                 .deleteById(anyLong());
     }
 

@@ -3,10 +3,12 @@ package com.magnetron.billing.service;
 import com.magnetron.billing.enumeration.DomainName;
 import com.magnetron.billing.enumeration.InnerError;
 import com.magnetron.billing.repository.IProductRepo;
+import com.magnetron.billing.repository.entity.Person;
 import com.magnetron.billing.repository.entity.Product;
 import com.magnetron.billing.service.dto.ProductDto;
 import com.magnetron.billing.service.exception.IncompleteDataRequiredException;
 import com.magnetron.billing.service.exception.RecordNotFoundException;
+import com.magnetron.billing.util.DataMapper;
 import com.magnetron.billing.util.EntityFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -27,13 +30,14 @@ import static org.mockito.Mockito.*;
 public class ProductServiceTest {
 
     @Mock
-    private IProductRepo iProductRepo;
+    private IProductRepo productRepo;
 
     private ModelMapper modelMapper;
 
     @InjectMocks
     private ProductService service;
 
+    private final int SIZE = 10;
 
     @BeforeEach
     void setUp(){
@@ -43,11 +47,22 @@ public class ProductServiceTest {
 
     @Test
     void canGetAllProduct() {
+        // given
+        List<?> productsDto = EntityFactory.getList(DomainName.Product, SIZE);
+        List<Product> products = DataMapper.mapList(productsDto, Product.class);
+
         // when
-        service.getAll();
+        when(productRepo.findAll())
+                .thenReturn(products);
+        List<?> result = service.getAll();
 
         // then
-        verify(iProductRepo).findAll();
+        assertThat(result)
+                .isNotNull();
+        assertThat(result.size())
+                .isEqualTo(SIZE);
+        verify(productRepo, times(1))
+                .findAll();
     }
 
     @Test
@@ -56,7 +71,7 @@ public class ProductServiceTest {
         ProductDto productDto = (ProductDto) EntityFactory.create(DomainName.Product);
         ModelMapper mapper = new ModelMapper();
         Product product = mapper.map(productDto, Product.class);
-        when(iProductRepo.save(any(Product.class)))
+        when(productRepo.save(any(Product.class)))
                 .thenReturn(product);
 
         // when
@@ -64,7 +79,7 @@ public class ProductServiceTest {
 
         // then
         ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
-        verify(iProductRepo).save(productArgumentCaptor.capture());
+        verify(productRepo).save(productArgumentCaptor.capture());
         Product innerProduct = productArgumentCaptor.getValue();
         assertThat(innerProduct)
                 .isNotNull();
@@ -87,7 +102,7 @@ public class ProductServiceTest {
     @Test
     void shouldFailWhenProductDoesNotExist(){
         // when
-        when(iProductRepo.findById(anyLong()))
+        when(productRepo.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
         RecordNotFoundException exception
@@ -108,7 +123,7 @@ public class ProductServiceTest {
         Product product = mapper.map(productDto, Product.class);
 
         // when
-        when(iProductRepo.findById(anyLong()))
+        when(productRepo.findById(anyLong()))
                 .thenReturn(Optional.of(product));
         ProductDto resultDto = service.getById(1L);
 
@@ -133,7 +148,7 @@ public class ProductServiceTest {
     @Test
     void shouldFailWhenTryToUpdateButProductDoesNotExist(){
         // when
-        when(iProductRepo.findById(anyLong()))
+        when(productRepo.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
         RecordNotFoundException exception
@@ -154,11 +169,11 @@ public class ProductServiceTest {
         Product product = mapper.map(productDto, Product.class);
 
         // when
-        when(iProductRepo.findById(anyLong()))
+        when(productRepo.findById(anyLong()))
                 .thenReturn(Optional.of(product));
 
         product.setUnit("Cambio");
-        when(iProductRepo.save(product))
+        when(productRepo.save(product))
                 .thenReturn(product);
 
         productDto = service.update(1L, productDto);
@@ -183,7 +198,7 @@ public class ProductServiceTest {
     @Test
     void shouldFailWhenIdIsNotFoundAndTryToDeleteProduct(){
         // when
-        when(iProductRepo.findById(anyLong()))
+        when(productRepo.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
         // when
@@ -205,7 +220,7 @@ public class ProductServiceTest {
         Product product = mapper.map(productDto, Product.class);
 
         // when
-        when(iProductRepo.findById(anyLong()))
+        when(productRepo.findById(anyLong()))
                 .thenReturn(Optional.of(product));
 
         boolean result = service.delete(1L);
@@ -214,7 +229,7 @@ public class ProductServiceTest {
         assertThat(result)
                 .isEqualTo(true);
 
-        verify(iProductRepo, times(1))
+        verify(productRepo, times(1))
                 .deleteById(anyLong());
     }
 

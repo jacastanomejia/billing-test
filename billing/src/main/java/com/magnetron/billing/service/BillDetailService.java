@@ -134,9 +134,9 @@ public class BillDetailService implements IBillDetailService {
 		if(billHeader.isEmpty())
 			throw new ReferenceNotFoundException(InnerError.REFERENCE_NOT_FOUND, BillHeader.class.toString());
 
-		ModelMapper modelMapper = new ModelMapper();
 		BillDetail billDetail = oldBillDetail.get();
-		modelMapper.map(data, billDetail);
+		billDetail.setLine(data.getLine());
+		billDetail.setQuantity(data.getQuantity());
 		billDetail.setProduct(product.get());
 		billDetail.setBillHeader(billHeader.get());
 		billDetail = billDetailRepo.save(billDetail);

@@ -96,9 +96,11 @@ public class ProductService implements IProductService {
 		if(oldProduct.isEmpty())
 			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.Product.getMessage());
 
-		ModelMapper modelMapper = new ModelMapper();
 		Product product = oldProduct.get();
-		modelMapper.map(data, product);
+		product.setUnit(data.getUnit());
+		product.setDescription(data.getDescription());
+		product.setPrice(data.getPrice());
+		product.setCost(data.getCost());
 		product = productRepo.save(product);
 		return mapper.map(product, ProductDto.class);
 	}

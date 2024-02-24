@@ -7,6 +7,7 @@ import com.magnetron.billing.service.dto.ProductDto;
 import com.magnetron.billing.service.exception.IncompleteDataRequiredException;
 import com.magnetron.billing.service.exception.RecordNotFoundException;
 import com.magnetron.billing.service.exception.ReferenceNotFoundException;
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -14,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
+import org.springframework.test.context.event.annotation.BeforeTestExecution;
 
 import java.util.Optional;
 
@@ -21,8 +24,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class ProductServiceTest {
 
@@ -117,6 +119,107 @@ public class ProductServiceTest {
                 .isEqualTo(productDto);
     }
 
+    @Test
+    void shouldFailWhenIdIsNullAndTryToUpdateProduct(){
+        // when
+        IncompleteDataRequiredException exception
+                = assertThrows(IncompleteDataRequiredException.class, ()->{
+            service.update(null, new ProductDto());
+        });
+
+        // then
+        assertThat(exception.getStatus())
+                .isEqualTo(InnerError.LOST_IDENTIFIER);
+    }
+
+    @Test
+    void shouldFailWhenTryToUpdateButProductDoesNotExist(){
+        // when
+        when(iProductRepo.findById(anyLong()))
+                .thenReturn(Optional.empty());
+
+        RecordNotFoundException exception
+                = assertThrows(RecordNotFoundException.class, ()->{
+            service.update(1L, new ProductDto());
+        });
+
+        // then
+        assertThat(exception.getStatus())
+                .isEqualTo(InnerError.RECORD_NOT_FOUND);
+    }
+
+    @Test
+    void shouldUpdateProduct(){
+        // given
+        ProductDto productDto = createdProductDtoInstanceBySetter();
+        ModelMapper mapper = new ModelMapper();
+        Product product = mapper.map(productDto, Product.class);
+
+        // when
+        when(iProductRepo.findById(anyLong()))
+                .thenReturn(Optional.of(product));
+
+        product.setUnit("Cambio");
+        when(iProductRepo.save(product))
+                .thenReturn(product);
+
+        productDto = service.update(1L, productDto);
+
+        // then
+        assertThat(productDto.getUnit())
+                .isEqualTo(product.getUnit());
+    }
+
+    @Test
+    void shouldFailWhenIdIsNullAndTryToDeleteProduct(){
+        IncompleteDataRequiredException exception
+                = assertThrows(IncompleteDataRequiredException.class, ()->{
+            service.delete(null);
+        });
+
+        // then
+        assertThat(exception.getStatus())
+                .isEqualTo(InnerError.LOST_IDENTIFIER);
+    }
+
+    @Test
+    void shouldFailWhenIdIsNotFoundAndTryToDeleteProduct(){
+        // when
+        when(iProductRepo.findById(anyLong()))
+                .thenReturn(Optional.empty());
+
+        // when
+        RecordNotFoundException exception
+                = assertThrows(RecordNotFoundException.class, ()->{
+            service.delete(1L);
+        });
+
+        // then
+        assertThat(exception.getStatus())
+                .isEqualTo(InnerError.RECORD_NOT_FOUND);
+    }
+
+    @Test
+    void shouldDeleteProduct(){
+        // given
+        ProductDto productDto = createdProductDtoInstanceBySetter();
+        ModelMapper mapper = new ModelMapper();
+        Product product = mapper.map(productDto, Product.class);
+
+        // when
+        when(iProductRepo.findById(anyLong()))
+                .thenReturn(Optional.of(product));
+
+        boolean result = service.delete(1L);
+
+        // then
+        assertThat(result)
+                .isEqualTo(true);
+
+        verify(iProductRepo, times(1))
+                .deleteById(anyLong());
+    }
+
     private ProductDto createdProductDtoInstance(){
         return ProductDto.builder()
                 .description("Shoes")
@@ -124,5 +227,15 @@ public class ProductServiceTest {
                 .cost(18_000d)
                 .unit("Unidad")
                 .build();
+    }
+
+    private ProductDto createdProductDtoInstanceBySetter(){
+        ProductDto productDto = new ProductDto();
+        productDto.setDescription("Item 1");
+        productDto.setPrice(22_000d);
+        productDto.setCost(12_000d);
+        productDto.setUnit("Unidad");
+
+        return productDto;
     }
 }

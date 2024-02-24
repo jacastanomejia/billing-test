@@ -1,0 +1,296 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > BillDetailService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.magnetron.billing.service</a>
+</div>
+
+<h1>Coverage Summary for Class: BillDetailService (com.magnetron.billing.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BillDetailService</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/54)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.magnetron.billing.service;
+&nbsp;
+&nbsp;
+&nbsp;import com.magnetron.billing.enumeration.DomainName;
+&nbsp;import com.magnetron.billing.enumeration.InnerError;
+&nbsp;import com.magnetron.billing.exception.ApiRestRuntimeException;
+&nbsp;import com.magnetron.billing.repository.IBillDetailRepo;
+&nbsp;import com.magnetron.billing.repository.IBillHeaderRepo;
+&nbsp;import com.magnetron.billing.repository.IProductRepo;
+&nbsp;import com.magnetron.billing.repository.entity.BillDetail;
+&nbsp;import com.magnetron.billing.repository.entity.BillHeader;
+&nbsp;import com.magnetron.billing.repository.entity.Product;
+&nbsp;import com.magnetron.billing.service.contract.IBillDetailService;
+&nbsp;import com.magnetron.billing.service.dto.BillDetailDto;
+&nbsp;import com.magnetron.billing.service.dto.BillDetailFullDto;
+&nbsp;import com.magnetron.billing.service.dto.ProductDto;
+&nbsp;import com.magnetron.billing.service.exception.IncompleteDataRequiredException;
+&nbsp;import com.magnetron.billing.service.exception.RecordNotFoundException;
+&nbsp;import com.magnetron.billing.service.exception.ReferenceNotFoundException;
+&nbsp;import com.magnetron.billing.util.DataMapper;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;import org.modelmapper.ModelMapper;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.beans.factory.annotation.Qualifier;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;@Service
+<b class="nc">&nbsp;@Slf4j</b>
+&nbsp;@Qualifier(&quot;billDetailService&quot;)
+<b class="nc">&nbsp;public class BillDetailService implements IBillDetailService {</b>
+&nbsp;
+&nbsp;	@Autowired
+&nbsp;	private IBillDetailRepo billDetailRepo;
+&nbsp;
+&nbsp;	@Autowired
+&nbsp;	private IBillHeaderRepo billHeaderRepo;
+&nbsp;
+&nbsp;	@Autowired
+&nbsp;	private IProductRepo productRepo;
+&nbsp;
+&nbsp;	private ModelMapper mapper;
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Obtiene todos los detalles de factura.
+&nbsp;	 *
+&nbsp;	 * @return Lista de objetos BillDetailDto.
+&nbsp;	 * @throws ApiRestRuntimeException Si ocurre un error durante la ejecución.
+&nbsp;	 */
+&nbsp;	@Override
+&nbsp;	public List&lt;BillDetailDto&gt; getAll()
+&nbsp;			throws ApiRestRuntimeException {
+<b class="nc">&nbsp;		return DataMapper.mapList(billDetailRepo.findAll(), BillDetailDto.class);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Obtiene un detalle de factura por su ID con detalles completos.
+&nbsp;	 *
+&nbsp;	 * @param id Identificador único del detalle de factura.
+&nbsp;	 * @return Objeto BillDetailFullDto correspondiente al ID proporcionado.
+&nbsp;	 * @throws ApiRestRuntimeException Si ocurre un error durante la ejecución o si el detalle de factura no se encuentra.
+&nbsp;	 */
+&nbsp;	@Override
+&nbsp;	public BillDetailFullDto getById(Long id)
+&nbsp;			throws ApiRestRuntimeException {
+<b class="nc">&nbsp;		if(id == null)</b>
+<b class="nc">&nbsp;			throw new IncompleteDataRequiredException(InnerError.LOST_IDENTIFIER);</b>
+&nbsp;
+<b class="nc">&nbsp;		Optional&lt;BillDetail&gt; billDetailOptional = billDetailRepo.findById(id);</b>
+<b class="nc">&nbsp;		if(billDetailOptional.isEmpty())</b>
+<b class="nc">&nbsp;			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.BillDetail.getMessage());</b>
+&nbsp;
+<b class="nc">&nbsp;		BillDetail billDetail = billDetailOptional.get();</b>
+<b class="nc">&nbsp;		BillDetailFullDto billDetailDto = mapper.map(billDetail, BillDetailFullDto.class);</b>
+<b class="nc">&nbsp;		billDetailDto.setProductDto(mapper.map(billDetail.getProduct(), ProductDto.class));</b>
+<b class="nc">&nbsp;		return billDetailDto;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Crea un nuevo detalle de factura.
+&nbsp;	 *
+&nbsp;	 * @param data Datos del detalle de factura a crear.
+&nbsp;	 * @return Objeto BillDetailDto del detalle de factura recién creado.
+&nbsp;	 * @throws ApiRestRuntimeException Si ocurre un error durante la ejecución.
+&nbsp;	 */
+&nbsp;	@Override
+&nbsp;	public BillDetailDto create(BillDetailDto data)
+&nbsp;			throws ApiRestRuntimeException {
+&nbsp;
+&nbsp;		// Checar que exista el producto referenciado en la factura
+<b class="nc">&nbsp;		Optional&lt;Product&gt; product = productRepo.findById(data.getIdProduct());</b>
+<b class="nc">&nbsp;		if(product.isEmpty())</b>
+<b class="nc">&nbsp;			throw new ReferenceNotFoundException(InnerError.REFERENCE_NOT_FOUND, Product.class.toString());</b>
+&nbsp;
+&nbsp;		// Checar que exista la cabecera de factura
+<b class="nc">&nbsp;		Optional&lt;BillHeader&gt; billHeader = billHeaderRepo.findById(data.getIdBillHeader());</b>
+<b class="nc">&nbsp;		if(billHeader.isEmpty())</b>
+<b class="nc">&nbsp;			throw new ReferenceNotFoundException(InnerError.REFERENCE_NOT_FOUND, BillHeader.class.toString());</b>
+&nbsp;
+<b class="nc">&nbsp;		BillDetail billDetail = mapper.map(data, BillDetail.class);</b>
+<b class="nc">&nbsp;		billDetail.setProduct(product.get());</b>
+<b class="nc">&nbsp;		billDetail = billDetailRepo.save(billDetail);</b>
+<b class="nc">&nbsp;		return mapper.map(billDetail, BillDetailDto.class);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Actualiza un detalle de factura existente por su ID.
+&nbsp;	 *
+&nbsp;	 * @param id   Identificador único del detalle de factura a actualizar.
+&nbsp;	 * @param data Nuevos datos del detalle de factura.
+&nbsp;	 * @return Objeto BillDetailDto del detalle de factura actualizado.
+&nbsp;	 * @throws ApiRestRuntimeException Si ocurre un error durante la ejecución o si el detalle de factura no se encuentra.
+&nbsp;	 */
+&nbsp;	@Override
+&nbsp;	public BillDetailDto update(Long id, BillDetailDto data)
+&nbsp;			throws ApiRestRuntimeException {
+<b class="nc">&nbsp;		if(id == null)</b>
+<b class="nc">&nbsp;			throw new IncompleteDataRequiredException(InnerError.LOST_IDENTIFIER);</b>
+&nbsp;
+&nbsp;		// Checar si existe la factura a modificar
+<b class="nc">&nbsp;		Optional&lt;BillDetail&gt; oldBillDetail = billDetailRepo.findById(id);</b>
+<b class="nc">&nbsp;		if(oldBillDetail.isEmpty())</b>
+<b class="nc">&nbsp;			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.BillDetail.getMessage());</b>
+&nbsp;
+&nbsp;		// Checar que exista el producto referenciado en la factura
+<b class="nc">&nbsp;		Optional&lt;Product&gt; product = productRepo.findById(data.getIdProduct());</b>
+<b class="nc">&nbsp;		if(product.isEmpty())</b>
+<b class="nc">&nbsp;			throw new ReferenceNotFoundException(InnerError.REFERENCE_NOT_FOUND, Product.class.toString());</b>
+&nbsp;
+&nbsp;		// Checar que exista la cabecera de factura
+<b class="nc">&nbsp;		Optional&lt;BillHeader&gt; billHeader = billHeaderRepo.findById(data.getIdBillHeader());</b>
+<b class="nc">&nbsp;		if(billHeader.isEmpty())</b>
+<b class="nc">&nbsp;			throw new ReferenceNotFoundException(InnerError.REFERENCE_NOT_FOUND, BillHeader.class.toString());</b>
+&nbsp;
+<b class="nc">&nbsp;		ModelMapper modelMapper = new ModelMapper();</b>
+<b class="nc">&nbsp;		BillDetail billDetail = oldBillDetail.get();</b>
+<b class="nc">&nbsp;		modelMapper.map(data, billDetail);</b>
+<b class="nc">&nbsp;		billDetail.setProduct(product.get());</b>
+<b class="nc">&nbsp;		billDetail.setBillHeader(billHeader.get());</b>
+<b class="nc">&nbsp;		billDetail = billDetailRepo.save(billDetail);</b>
+<b class="nc">&nbsp;		return mapper.map(billDetail, BillDetailDto.class);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Elimina un detalle de factura por su ID.
+&nbsp;	 *
+&nbsp;	 * @param id Identificador único del detalle de factura a eliminar.
+&nbsp;	 * @return true si la eliminación fue exitosa.
+&nbsp;	 * @throws ApiRestRuntimeException Si ocurre un error durante la ejecución o si el detalle de factura no se encuentra.
+&nbsp;	 */
+&nbsp;	@Override
+&nbsp;	public boolean delete(Long id)
+&nbsp;			throws ApiRestRuntimeException {
+<b class="nc">&nbsp;		if(id == null)</b>
+<b class="nc">&nbsp;			throw new IncompleteDataRequiredException(InnerError.LOST_IDENTIFIER);</b>
+&nbsp;
+<b class="nc">&nbsp;		Optional&lt;BillDetail&gt; billDetail = billDetailRepo.findById(id);</b>
+<b class="nc">&nbsp;		if(billDetail.isEmpty())</b>
+<b class="nc">&nbsp;			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.BillDetail.getMessage());</b>
+&nbsp;
+<b class="nc">&nbsp;		billDetailRepo.deleteById(id);</b>
+<b class="nc">&nbsp;		return true;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Obtiene todos los detalles de factura asociados a una factura específica.
+&nbsp;	 *
+&nbsp;	 * @param id Identificador único de la factura.
+&nbsp;	 * @return Lista de objetos BillDetailDto asociados a la factura.
+&nbsp;	 * @throws ApiRestRuntimeException Si ocurre un error durante la ejecución o si la factura no se encuentra.
+&nbsp;	 */
+&nbsp;	@Override
+&nbsp;	public List&lt;BillDetailDto&gt; getByReference(Long id)
+&nbsp;			throws ApiRestRuntimeException {
+<b class="nc">&nbsp;		if(id == null)</b>
+<b class="nc">&nbsp;			throw new IncompleteDataRequiredException(InnerError.LOST_IDENTIFIER);</b>
+&nbsp;
+<b class="nc">&nbsp;		Optional&lt;BillHeader&gt; billHeader = billHeaderRepo.findById(id);</b>
+<b class="nc">&nbsp;		if(billHeader.isEmpty())</b>
+<b class="nc">&nbsp;			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.BillDetail.getMessage());</b>
+&nbsp;
+<b class="nc">&nbsp;		return DataMapper.mapList(billDetailRepo.findByBillHeader(billHeader.get()), BillDetailDto.class);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@Autowired
+&nbsp;	public void setMapper(ModelMapper mapper){
+<b class="nc">&nbsp;		this.mapper = mapper;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-02-23 20:36</div>
+</div>
+</body>
+</html>

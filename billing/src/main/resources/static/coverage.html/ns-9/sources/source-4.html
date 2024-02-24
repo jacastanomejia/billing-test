@@ -1,0 +1,243 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > ProductService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.magnetron.billing.service</a>
+</div>
+
+<h1>Coverage Summary for Class: ProductService (com.magnetron.billing.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProductService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (7/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    78.1%
+  </span>
+  <span class="absValue">
+    (25/32)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.magnetron.billing.service;
+&nbsp;
+&nbsp;
+&nbsp;import com.magnetron.billing.enumeration.DomainName;
+&nbsp;import com.magnetron.billing.enumeration.InnerError;
+&nbsp;import com.magnetron.billing.exception.ApiRestRuntimeException;
+&nbsp;import com.magnetron.billing.repository.IProductRepo;
+&nbsp;import com.magnetron.billing.repository.entity.Product;
+&nbsp;import com.magnetron.billing.service.contract.IProductService;
+&nbsp;import com.magnetron.billing.service.dto.ProductDto;
+&nbsp;import com.magnetron.billing.service.exception.IncompleteDataRequiredException;
+&nbsp;import com.magnetron.billing.service.exception.RecordNotFoundException;
+&nbsp;import com.magnetron.billing.util.DataMapper;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;import org.modelmapper.ModelMapper;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.beans.factory.annotation.Qualifier;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;@Slf4j</b>
+&nbsp;@Qualifier(&quot;productService&quot;)
+<b class="fc">&nbsp;public class ProductService implements IProductService {</b>
+&nbsp;
+&nbsp;	@Autowired
+&nbsp;	private IProductRepo productRepo;
+&nbsp;
+&nbsp;	private ModelMapper mapper;
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Obtiene todos los productos.
+&nbsp;	 *
+&nbsp;	 * @return Lista de objetos ProductDto.
+&nbsp;	 * @throws ApiRestRuntimeException Si ocurre un error durante la ejecución.
+&nbsp;	 */
+&nbsp;	@Override
+&nbsp;	public List&lt;ProductDto&gt; getAll()
+&nbsp;			throws ApiRestRuntimeException {
+<b class="fc">&nbsp;		return DataMapper.mapList(productRepo.findAll(), ProductDto.class);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Obtiene un producto por su ID.
+&nbsp;	 *
+&nbsp;	 * @param id Identificador único del producto.
+&nbsp;	 * @return Objeto ProductDto correspondiente al ID proporcionado.
+&nbsp;	 * @throws ApiRestRuntimeException Si ocurre un error durante la ejecución o si el producto no se encuentra.
+&nbsp;	 */
+&nbsp;	@Override
+&nbsp;	public ProductDto getById(Long id)
+&nbsp;			throws ApiRestRuntimeException {
+<b class="fc">&nbsp;		if(id == null)</b>
+<b class="fc">&nbsp;			throw new IncompleteDataRequiredException(InnerError.LOST_IDENTIFIER);</b>
+&nbsp;
+<b class="fc">&nbsp;		Optional&lt;Product&gt; product = productRepo.findById(id);</b>
+<b class="fc">&nbsp;		if(product.isEmpty())</b>
+<b class="fc">&nbsp;			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.Product.getMessage());</b>
+&nbsp;
+<b class="fc">&nbsp;		return  mapper.map(product.get(), ProductDto.class);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Crea un nuevo producto.
+&nbsp;	 *
+&nbsp;	 * @param data Datos del producto a crear.
+&nbsp;	 * @return Objeto ProductDto del producto recién creado.
+&nbsp;	 * @throws ApiRestRuntimeException Si ocurre un error durante la ejecución.
+&nbsp;	 */
+&nbsp;	@Override
+&nbsp;	public ProductDto create(ProductDto data)
+&nbsp;			throws ApiRestRuntimeException {
+<b class="fc">&nbsp;		Product product = mapper.map(data, Product.class);</b>
+<b class="fc">&nbsp;		product = productRepo.save(product);</b>
+<b class="fc">&nbsp;		return mapper.map(product, ProductDto.class);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Actualiza un producto existente por su ID.
+&nbsp;	 *
+&nbsp;	 * @param id   Identificador único del producto a actualizar.
+&nbsp;	 * @param data Nuevos datos del producto.
+&nbsp;	 * @return Objeto ProductDto del producto actualizado.
+&nbsp;	 * @throws ApiRestRuntimeException Si ocurre un error durante la ejecución o si el producto no se encuentra.
+&nbsp;	 */
+&nbsp;	@Override
+&nbsp;	public ProductDto update(Long id, ProductDto data)
+&nbsp;			throws ApiRestRuntimeException {
+<b class="fc">&nbsp;		if(id == null)</b>
+<b class="fc">&nbsp;			throw new IncompleteDataRequiredException(InnerError.LOST_IDENTIFIER);</b>
+&nbsp;
+<b class="fc">&nbsp;		Optional&lt;Product&gt; oldProduct = productRepo.findById(id);</b>
+<b class="fc">&nbsp;		if(oldProduct.isEmpty())</b>
+<b class="fc">&nbsp;			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.Product.getMessage());</b>
+&nbsp;
+<b class="fc">&nbsp;		Product product = oldProduct.get();</b>
+<b class="fc">&nbsp;		product.setUnit(data.getUnit());</b>
+<b class="fc">&nbsp;		product.setDescription(data.getDescription());</b>
+<b class="fc">&nbsp;		product.setPrice(data.getPrice());</b>
+<b class="fc">&nbsp;		product.setCost(data.getCost());</b>
+<b class="fc">&nbsp;		product = productRepo.save(product);</b>
+<b class="fc">&nbsp;		return mapper.map(product, ProductDto.class);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Elimina un producto por su ID.
+&nbsp;	 *
+&nbsp;	 * @param id Identificador único del producto a eliminar.
+&nbsp;	 * @return true si la eliminación fue exitosa.
+&nbsp;	 * @throws ApiRestRuntimeException Si ocurre un error durante la ejecución o si el producto no se encuentra.
+&nbsp;	 */
+&nbsp;	@Override
+&nbsp;	public boolean delete(Long id)
+&nbsp;			throws ApiRestRuntimeException {
+<b class="nc">&nbsp;		if(id == null)</b>
+<b class="nc">&nbsp;			throw new IncompleteDataRequiredException(InnerError.LOST_IDENTIFIER);</b>
+&nbsp;
+<b class="nc">&nbsp;		Optional&lt;Product&gt; product = productRepo.findById(id);</b>
+<b class="nc">&nbsp;		if(product.isEmpty())</b>
+<b class="nc">&nbsp;			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.Product.getMessage());</b>
+&nbsp;
+<b class="nc">&nbsp;		productRepo.deleteById(id);</b>
+<b class="nc">&nbsp;		return true;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Establece el ModelMapper utilizado por el servicio.
+&nbsp;	 *
+&nbsp;	 * @param mapper ModelMapper a establecer.
+&nbsp;	 */
+&nbsp;	@Autowired
+&nbsp;	public void setMapper(ModelMapper mapper){
+<b class="fc">&nbsp;		this.mapper = mapper;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-02-23 20:36</div>
+</div>
+</body>
+</html>

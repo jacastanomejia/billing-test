@@ -1,0 +1,250 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > BillHeaderRestController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.magnetron.billing.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: BillHeaderRestController (com.magnetron.billing.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BillHeaderRestController</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/15)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.magnetron.billing.controller;
+&nbsp;
+&nbsp;import com.magnetron.billing.controller.exception.DataValidationException;
+&nbsp;import com.magnetron.billing.enumeration.InnerError;
+&nbsp;import com.magnetron.billing.enumeration.StatusMessage;
+&nbsp;import com.magnetron.billing.service.contract.IBillHeaderService;
+&nbsp;import com.magnetron.billing.service.dto.BillHeaderDto;
+&nbsp;import com.magnetron.billing.service.dto.BillHeaderFullDto;
+&nbsp;import com.magnetron.billing.util.MessageParse;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.media.ArraySchema;
+&nbsp;import io.swagger.v3.oas.annotations.media.Content;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponses;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.validation.BindingResult;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/api/v1/bills&quot;)
+&nbsp;@CrossOrigin
+<b class="nc">&nbsp;public class BillHeaderRestController {</b>
+&nbsp;
+&nbsp;	@Autowired
+&nbsp;	private IBillHeaderService service;
+&nbsp;
+&nbsp;	@Operation(
+&nbsp;			summary = &quot;Obtener todos los encabezados de factura&quot;,
+&nbsp;			description = &quot;Recupera la lista completa de encabezados de factura.&quot;
+&nbsp;	)
+&nbsp;	@ApiResponses(value = {
+&nbsp;			@ApiResponse(
+&nbsp;					responseCode = &quot;200&quot;,
+&nbsp;					description = &quot;Lista de encabezados de factura recuperada con éxito&quot;,
+&nbsp;					content = @Content(mediaType = &quot;application/json&quot;, array = @ArraySchema(schema = @Schema(implementation = BillHeaderDto.class))))
+&nbsp;	})
+&nbsp;	@GetMapping
+&nbsp;	public ResponseEntity&lt;Object&gt; getAll(){
+<b class="nc">&nbsp;		List&lt;BillHeaderDto&gt; dtoList  = service.getAll();</b>
+<b class="nc">&nbsp;		return MessageParse.generateResponse(StatusMessage.OK.toString(), HttpStatus.OK, dtoList);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@Operation(
+&nbsp;			summary = &quot;Obtener un encabezado de factura por ID&quot;,
+&nbsp;			description = &quot;Recupera un encabezado de factura específico por su ID con detalles completos.&quot;
+&nbsp;	)
+&nbsp;	@ApiResponses(value = {
+&nbsp;			@ApiResponse(
+&nbsp;					responseCode = &quot;200&quot;,
+&nbsp;					description = &quot;Encabezado de factura recuperado con éxito&quot;,
+&nbsp;					content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = BillHeaderFullDto.class))),
+&nbsp;			@ApiResponse(
+&nbsp;					responseCode = &quot;404&quot;,
+&nbsp;					description = &quot;Encabezado de factura no encontrado&quot;,
+&nbsp;					content = @Content)
+&nbsp;	})
+&nbsp;	@GetMapping(path=&quot;/{id}&quot;)
+&nbsp;	public ResponseEntity&lt;BillHeaderFullDto&gt; getById(@PathVariable Long id){
+<b class="nc">&nbsp;		BillHeaderFullDto dto = service.getById(id);</b>
+<b class="nc">&nbsp;		return new ResponseEntity&lt;&gt;(dto, HttpStatus.OK);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@ApiResponses(value = {
+&nbsp;			@ApiResponse(
+&nbsp;					responseCode = &quot;201&quot;,
+&nbsp;					description = &quot;Encabezado de factura creado con éxito&quot;,
+&nbsp;					content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = BillHeaderDto.class))),
+&nbsp;			@ApiResponse(
+&nbsp;					responseCode = &quot;400&quot;,
+&nbsp;					description = &quot;Error de validación de datos&quot;,
+&nbsp;					content = @Content),
+&nbsp;			@ApiResponse(
+&nbsp;					responseCode = &quot;422&quot;,
+&nbsp;					description = &quot;Error de validación de datos&quot;,
+&nbsp;					content = @Content)
+&nbsp;	})
+&nbsp;	@PostMapping
+&nbsp;	public ResponseEntity&lt;Object&gt; create(@Valid @RequestBody BillHeaderDto data, BindingResult validation) {
+&nbsp;		// Check validations defined in BillHeaderDto
+<b class="nc">&nbsp;		if(validation.hasErrors()) {</b>
+<b class="nc">&nbsp;			throw new DataValidationException(InnerError.DATA_VALIDATION, MessageParse.getErrorMessage(validation));</b>
+&nbsp;		}
+&nbsp;
+<b class="nc">&nbsp;		BillHeaderDto result = service.create(data);</b>
+<b class="nc">&nbsp;		return MessageParse.generateResponse(StatusMessage.OK.toString(), HttpStatus.CREATED, result);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@Operation(
+&nbsp;			summary = &quot;Actualizar un encabezado de factura existente por ID&quot;,
+&nbsp;			description = &quot;Actualiza un encabezado de factura existente con los nuevos datos proporcionados.&quot;
+&nbsp;	)
+&nbsp;	@ApiResponses(value = {
+&nbsp;			@ApiResponse(
+&nbsp;					responseCode = &quot;201&quot;,
+&nbsp;					description = &quot;Encabezado de factura actualizado con éxito&quot;,
+&nbsp;					content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = BillHeaderDto.class))),
+&nbsp;			@ApiResponse(
+&nbsp;					responseCode = &quot;400&quot;,
+&nbsp;					description = &quot;Error de validación de datos&quot;,
+&nbsp;					content = @Content),
+&nbsp;			@ApiResponse(
+&nbsp;					responseCode = &quot;404&quot;,
+&nbsp;					description = &quot;Encabezado de factura no encontrado&quot;,
+&nbsp;					content = @Content),
+&nbsp;			@ApiResponse(
+&nbsp;					responseCode = &quot;422&quot;,
+&nbsp;					description = &quot;Error de validación de datos&quot;,
+&nbsp;					content = @Content)
+&nbsp;	})
+&nbsp;	@PutMapping(value = &quot;/{id}&quot;)
+&nbsp;	public ResponseEntity&lt;Object&gt; update(@PathVariable Long id, @Valid @RequestBody BillHeaderDto data, BindingResult validation) {
+<b class="nc">&nbsp; 		if(validation.hasErrors()) {</b>
+<b class="nc">&nbsp;			throw new DataValidationException(InnerError.DATA_VALIDATION, MessageParse.getErrorMessage(validation));</b>
+&nbsp;		}
+&nbsp;
+<b class="nc">&nbsp;		BillHeaderDto result = service.update(id, data);</b>
+<b class="nc">&nbsp;		return MessageParse.generateResponse(StatusMessage.OK.toString(), HttpStatus.CREATED, result);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@Operation(
+&nbsp;			summary = &quot;Eliminar un encabezado de factura por ID&quot;,
+&nbsp;			description = &quot;Elimina un encabezado de factura existente por su ID.&quot;
+&nbsp;	)
+&nbsp;	@ApiResponses(value = {
+&nbsp;			@ApiResponse(
+&nbsp;					responseCode = &quot;200&quot;,
+&nbsp;					description = &quot;Encabezado de factura eliminado con éxito&quot;,
+&nbsp;					content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = Boolean.class))),
+&nbsp;			@ApiResponse(
+&nbsp;					responseCode = &quot;404&quot;,
+&nbsp;					description = &quot;Encabezado de factura no encontrado&quot;,
+&nbsp;					content = @Content)
+&nbsp;	})
+&nbsp;	@DeleteMapping(value = &quot;/{id}&quot;)
+&nbsp;	public ResponseEntity&lt;Object&gt; delete(@PathVariable Long id) {
+<b class="nc">&nbsp;		boolean result = service.delete(id);</b>
+<b class="nc">&nbsp;		return MessageParse.generateResponse(StatusMessage.OK.toString(), HttpStatus.OK, result);</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-02-23 20:36</div>
+</div>
+</body>
+</html>

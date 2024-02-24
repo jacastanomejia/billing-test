@@ -111,3 +111,44 @@ Este comando detendrá y eliminará los contenedores de la aplicación.
 ¡Listo! Tu aplicación de facturación de productos desarrollada en Spring Boot debería estar ahora desplegada y accesible a través de Docker Compose.
 
 
+# Arquitectura y Decisiones Técnicas en la Construcción de la API REST
+
+## Visión General
+
+La API REST desarrollada sigue una arquitectura monolítica, implementada en Java 17 con el framework Spring y Spring Data JPA para la interacción con MySQL. La aplicación está organizada en tres capas: controlador, servicio y repositorio, con handlers de excepciones para respuestas claras al cliente en caso de errores.
+
+## Ventajas
+
+1. **Simplicidad y Cohesión:** La arquitectura monolítica simplifica el desarrollo y mantenimiento al consolidar todas las funcionalidades en un único proyecto, facilitando configuración, despliegue y escalabilidad.
+
+2. **Rendimiento:** La ejecución en un solo proceso mejora la eficiencia en la comunicación entre capas, evitando la latencia de arquitecturas distribuidas.
+
+3. **Facilidad de Despliegue:** La aplicación monolítica se despliega fácilmente, empaquetando toda la funcionalidad en un solo artefacto, simplificando implementaciones en servidores de aplicaciones o en la nube.
+
+4. **Simplicidad en la Capa de Datos:** Spring Data JPA facilita las operaciones de acceso a la base de datos, eliminando la necesidad de escribir consultas SQL manuales.
+
+5. **Pruebas Unitarias:** Las pruebas unitarias en la capa de servicios aseguran la calidad del código y detectan posibles problemas temprano.
+
+## Desventajas
+
+1. **Escalabilidad Limitada:** La arquitectura monolítica puede presentar desafíos en escalabilidad a medida que la aplicación crece, sugiriendo una transición a microservicios para una mejor escalabilidad horizontal.
+
+2. **Despliegues Independientes:** Los cambios en una parte de la aplicación requieren el despliegue de toda la aplicación, aumentando el riesgo de errores y complejidad.
+
+3. **Acoplamiento Fuerte:** La monolitización puede resultar en un acoplamiento fuerte entre módulos, complicando la evolución independiente de cada componente.
+
+4. **Dificultad en Adopción de Nuevas Tecnologías:** La arquitectura monolítica puede dificultar la adopción de nuevas tecnologías específicas, ya que todo está integrado en una unidad.
+
+## Decisiones Técnicas
+
+1. **Separación de Capas:** La división en capas (controlador, servicio, repositorio) sigue las mejores prácticas de diseño, facilitando el mantenimiento y comprensión del código.
+
+2. **DTO para Transferencia de Datos:** La utilización de objetos DTO permite la transferencia eficiente de datos entre capas, evitando la exposición innecesaria de la estructura interna de las entidades.
+
+3. **Handlers de Excepciones:** Implementamos handlers de excepciones para respuestas coherentes y comprensibles en caso de errores.
+
+4. **Pruebas Unitarias en Capa de Servicios:** Aseguramos la fiabilidad y robustez del código con pruebas unitarias en la capa de servicios, identificando problemas potenciales temprano.
+
+5. **Spring Data JPA para Acceso a Datos:** Utilizamos Spring Data JPA para simplificar las operaciones CRUD en la base de datos, reduciendo la cantidad de código necesario.
+
+En resumen, la arquitectura monolítica y las decisiones técnicas tomadas ofrecen simplicidad y eficiencia en el desarrollo y despliegue, aunque con limitaciones en escalabilidad y flexibilidad en comparación con arquitecturas más distribuidas como microservicios.

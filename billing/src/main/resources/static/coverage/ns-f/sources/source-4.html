@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
-  <title>Coverage Report > IMoreExpensivePurchaseService</title>
+  <title>Coverage Report > IPersonService</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -22,14 +22,14 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">com.magnetron.billing.service.contract</a>
 </div>
 
-<h1>Coverage Summary for Class: IMoreExpensivePurchaseService (com.magnetron.billing.service.contract)</h1>
+<h1>Coverage Summary for Class: IPersonService (com.magnetron.billing.service.contract)</h1>
 
 <table class="coverageStats">
 <tr>
   <th class="name">Class</th>
 </tr>
 <tr>
-  <td class="name">IMoreExpensivePurchaseService</td>
+  <td class="name">IPersonService</td>
 </tr>
 
 </table>
@@ -41,11 +41,13 @@ Current scope:     <a href="../../index.html">all classes</a>
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package com.magnetron.billing.service.contract;
 &nbsp;
-&nbsp;import com.magnetron.billing.repository.entity.PersonMoreExpensivePurchase;
-&nbsp;import com.magnetron.billing.service.contract.base.IQueryViewService;
+&nbsp;import com.magnetron.billing.service.contract.base.ICrudService;
+&nbsp;import com.magnetron.billing.service.contract.base.IQueryByIdService;
+&nbsp;import com.magnetron.billing.service.dto.PersonDto;
 &nbsp;
-&nbsp;public interface IMoreExpensivePurchaseService
-&nbsp;        extends IQueryViewService&lt;PersonMoreExpensivePurchase&gt; {
+&nbsp;public interface IPersonService
+&nbsp;        extends ICrudService&lt;PersonDto, Long&gt;,
+&nbsp;                IQueryByIdService&lt;PersonDto, Long&gt; {
 &nbsp;}
 </code>
 </pre>
@@ -70,7 +72,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-02-23 22:55</div>
+    <div style="float:right;">generated on 2024-02-24 18:32</div>
 </div>
 </body>
 </html>

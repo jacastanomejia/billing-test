@@ -44,26 +44,26 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name">BillDetailService</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    88.9%
   </span>
   <span class="absValue">
-    (0/9)
+    (8/9)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    85.2%
   </span>
   <span class="absValue">
-    (0/54)
+    (46/54)
   </span>
 </td>
 </tr>
@@ -105,9 +105,9 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import java.util.Optional;
 &nbsp;
 &nbsp;@Service
-<b class="nc">&nbsp;@Slf4j</b>
+<b class="fc">&nbsp;@Slf4j</b>
 &nbsp;@Qualifier(&quot;billDetailService&quot;)
-<b class="nc">&nbsp;public class BillDetailService implements IBillDetailService {</b>
+<b class="fc">&nbsp;public class BillDetailService implements IBillDetailService {</b>
 &nbsp;
 &nbsp;	@Autowired
 &nbsp;	private IBillDetailRepo billDetailRepo;
@@ -129,7 +129,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;	@Override
 &nbsp;	public List&lt;BillDetailDto&gt; getAll()
 &nbsp;			throws ApiRestRuntimeException {
-<b class="nc">&nbsp;		return DataMapper.mapList(billDetailRepo.findAll(), BillDetailDto.class);</b>
+<b class="fc">&nbsp;		return DataMapper.mapList(billDetailRepo.findAll(), BillDetailDto.class);</b>
 &nbsp;	}
 &nbsp;
 &nbsp;	/**
@@ -142,17 +142,17 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;	@Override
 &nbsp;	public BillDetailFullDto getById(Long id)
 &nbsp;			throws ApiRestRuntimeException {
-<b class="nc">&nbsp;		if(id == null)</b>
-<b class="nc">&nbsp;			throw new IncompleteDataRequiredException(InnerError.LOST_IDENTIFIER);</b>
+<b class="fc">&nbsp;		if(id == null)</b>
+<b class="fc">&nbsp;			throw new IncompleteDataRequiredException(InnerError.LOST_IDENTIFIER);</b>
 &nbsp;
-<b class="nc">&nbsp;		Optional&lt;BillDetail&gt; billDetailOptional = billDetailRepo.findById(id);</b>
-<b class="nc">&nbsp;		if(billDetailOptional.isEmpty())</b>
-<b class="nc">&nbsp;			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.BillDetail.getMessage());</b>
+<b class="fc">&nbsp;		Optional&lt;BillDetail&gt; billDetailOptional = billDetailRepo.findById(id);</b>
+<b class="fc">&nbsp;		if(billDetailOptional.isEmpty())</b>
+<b class="fc">&nbsp;			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.BillDetail.getMessage());</b>
 &nbsp;
-<b class="nc">&nbsp;		BillDetail billDetail = billDetailOptional.get();</b>
-<b class="nc">&nbsp;		BillDetailFullDto billDetailDto = mapper.map(billDetail, BillDetailFullDto.class);</b>
-<b class="nc">&nbsp;		billDetailDto.setProductDto(mapper.map(billDetail.getProduct(), ProductDto.class));</b>
-<b class="nc">&nbsp;		return billDetailDto;</b>
+<b class="fc">&nbsp;		BillDetail billDetail = billDetailOptional.get();</b>
+<b class="fc">&nbsp;		BillDetailFullDto billDetailDto = mapper.map(billDetail, BillDetailFullDto.class);</b>
+<b class="fc">&nbsp;		billDetailDto.setProductDto(mapper.map(billDetail.getProduct(), ProductDto.class));</b>
+<b class="fc">&nbsp;		return billDetailDto;</b>
 &nbsp;	}
 &nbsp;
 &nbsp;	/**
@@ -167,19 +167,19 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;			throws ApiRestRuntimeException {
 &nbsp;
 &nbsp;		// Checar que exista el producto referenciado en la factura
-<b class="nc">&nbsp;		Optional&lt;Product&gt; product = productRepo.findById(data.getIdProduct());</b>
-<b class="nc">&nbsp;		if(product.isEmpty())</b>
-<b class="nc">&nbsp;			throw new ReferenceNotFoundException(InnerError.REFERENCE_NOT_FOUND, Product.class.toString());</b>
+<b class="fc">&nbsp;		Optional&lt;Product&gt; product = productRepo.findById(data.getIdProduct());</b>
+<b class="fc">&nbsp;		if(product.isEmpty())</b>
+<b class="fc">&nbsp;			throw new ReferenceNotFoundException(InnerError.REFERENCE_NOT_FOUND, Product.class.toString());</b>
 &nbsp;
 &nbsp;		// Checar que exista la cabecera de factura
-<b class="nc">&nbsp;		Optional&lt;BillHeader&gt; billHeader = billHeaderRepo.findById(data.getIdBillHeader());</b>
-<b class="nc">&nbsp;		if(billHeader.isEmpty())</b>
+<b class="fc">&nbsp;		Optional&lt;BillHeader&gt; billHeader = billHeaderRepo.findById(data.getIdBillHeader());</b>
+<b class="fc">&nbsp;		if(billHeader.isEmpty())</b>
 <b class="nc">&nbsp;			throw new ReferenceNotFoundException(InnerError.REFERENCE_NOT_FOUND, BillHeader.class.toString());</b>
 &nbsp;
-<b class="nc">&nbsp;		BillDetail billDetail = mapper.map(data, BillDetail.class);</b>
-<b class="nc">&nbsp;		billDetail.setProduct(product.get());</b>
-<b class="nc">&nbsp;		billDetail = billDetailRepo.save(billDetail);</b>
-<b class="nc">&nbsp;		return mapper.map(billDetail, BillDetailDto.class);</b>
+<b class="fc">&nbsp;		BillDetail billDetail = mapper.map(data, BillDetail.class);</b>
+<b class="fc">&nbsp;		billDetail.setProduct(product.get());</b>
+<b class="fc">&nbsp;		billDetail = billDetailRepo.save(billDetail);</b>
+<b class="fc">&nbsp;		return mapper.map(billDetail, BillDetailDto.class);</b>
 &nbsp;	}
 &nbsp;
 &nbsp;	/**
@@ -193,31 +193,31 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;	@Override
 &nbsp;	public BillDetailDto update(Long id, BillDetailDto data)
 &nbsp;			throws ApiRestRuntimeException {
-<b class="nc">&nbsp;		if(id == null)</b>
-<b class="nc">&nbsp;			throw new IncompleteDataRequiredException(InnerError.LOST_IDENTIFIER);</b>
+<b class="fc">&nbsp;		if(id == null)</b>
+<b class="fc">&nbsp;			throw new IncompleteDataRequiredException(InnerError.LOST_IDENTIFIER);</b>
 &nbsp;
 &nbsp;		// Checar si existe la factura a modificar
-<b class="nc">&nbsp;		Optional&lt;BillDetail&gt; oldBillDetail = billDetailRepo.findById(id);</b>
-<b class="nc">&nbsp;		if(oldBillDetail.isEmpty())</b>
-<b class="nc">&nbsp;			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.BillDetail.getMessage());</b>
+<b class="fc">&nbsp;		Optional&lt;BillDetail&gt; oldBillDetail = billDetailRepo.findById(id);</b>
+<b class="fc">&nbsp;		if(oldBillDetail.isEmpty())</b>
+<b class="fc">&nbsp;			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.BillDetail.getMessage());</b>
 &nbsp;
 &nbsp;		// Checar que exista el producto referenciado en la factura
-<b class="nc">&nbsp;		Optional&lt;Product&gt; product = productRepo.findById(data.getIdProduct());</b>
-<b class="nc">&nbsp;		if(product.isEmpty())</b>
-<b class="nc">&nbsp;			throw new ReferenceNotFoundException(InnerError.REFERENCE_NOT_FOUND, Product.class.toString());</b>
+<b class="fc">&nbsp;		Optional&lt;Product&gt; product = productRepo.findById(data.getIdProduct());</b>
+<b class="fc">&nbsp;		if(product.isEmpty())</b>
+<b class="fc">&nbsp;			throw new ReferenceNotFoundException(InnerError.REFERENCE_NOT_FOUND, Product.class.toString());</b>
 &nbsp;
 &nbsp;		// Checar que exista la cabecera de factura
-<b class="nc">&nbsp;		Optional&lt;BillHeader&gt; billHeader = billHeaderRepo.findById(data.getIdBillHeader());</b>
-<b class="nc">&nbsp;		if(billHeader.isEmpty())</b>
+<b class="fc">&nbsp;		Optional&lt;BillHeader&gt; billHeader = billHeaderRepo.findById(data.getIdBillHeader());</b>
+<b class="fc">&nbsp;		if(billHeader.isEmpty())</b>
 <b class="nc">&nbsp;			throw new ReferenceNotFoundException(InnerError.REFERENCE_NOT_FOUND, BillHeader.class.toString());</b>
 &nbsp;
-<b class="nc">&nbsp;		ModelMapper modelMapper = new ModelMapper();</b>
-<b class="nc">&nbsp;		BillDetail billDetail = oldBillDetail.get();</b>
-<b class="nc">&nbsp;		modelMapper.map(data, billDetail);</b>
-<b class="nc">&nbsp;		billDetail.setProduct(product.get());</b>
-<b class="nc">&nbsp;		billDetail.setBillHeader(billHeader.get());</b>
-<b class="nc">&nbsp;		billDetail = billDetailRepo.save(billDetail);</b>
-<b class="nc">&nbsp;		return mapper.map(billDetail, BillDetailDto.class);</b>
+<b class="fc">&nbsp;		BillDetail billDetail = oldBillDetail.get();</b>
+<b class="fc">&nbsp;		billDetail.setLine(data.getLine());</b>
+<b class="fc">&nbsp;		billDetail.setQuantity(data.getQuantity());</b>
+<b class="fc">&nbsp;		billDetail.setProduct(product.get());</b>
+<b class="fc">&nbsp;		billDetail.setBillHeader(billHeader.get());</b>
+<b class="fc">&nbsp;		billDetail = billDetailRepo.save(billDetail);</b>
+<b class="fc">&nbsp;		return mapper.map(billDetail, BillDetailDto.class);</b>
 &nbsp;	}
 &nbsp;
 &nbsp;	/**
@@ -230,15 +230,15 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;	@Override
 &nbsp;	public boolean delete(Long id)
 &nbsp;			throws ApiRestRuntimeException {
-<b class="nc">&nbsp;		if(id == null)</b>
-<b class="nc">&nbsp;			throw new IncompleteDataRequiredException(InnerError.LOST_IDENTIFIER);</b>
+<b class="fc">&nbsp;		if(id == null)</b>
+<b class="fc">&nbsp;			throw new IncompleteDataRequiredException(InnerError.LOST_IDENTIFIER);</b>
 &nbsp;
-<b class="nc">&nbsp;		Optional&lt;BillDetail&gt; billDetail = billDetailRepo.findById(id);</b>
-<b class="nc">&nbsp;		if(billDetail.isEmpty())</b>
-<b class="nc">&nbsp;			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.BillDetail.getMessage());</b>
+<b class="fc">&nbsp;		Optional&lt;BillDetail&gt; billDetail = billDetailRepo.findById(id);</b>
+<b class="fc">&nbsp;		if(billDetail.isEmpty())</b>
+<b class="fc">&nbsp;			throw new RecordNotFoundException(InnerError.RECORD_NOT_FOUND, DomainName.BillDetail.getMessage());</b>
 &nbsp;
-<b class="nc">&nbsp;		billDetailRepo.deleteById(id);</b>
-<b class="nc">&nbsp;		return true;</b>
+<b class="fc">&nbsp;		billDetailRepo.deleteById(id);</b>
+<b class="fc">&nbsp;		return true;</b>
 &nbsp;	}
 &nbsp;
 &nbsp;	/**
@@ -263,7 +263,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;	@Autowired
 &nbsp;	public void setMapper(ModelMapper mapper){
-<b class="nc">&nbsp;		this.mapper = mapper;</b>
+<b class="fc">&nbsp;		this.mapper = mapper;</b>
 &nbsp;	}
 &nbsp;
 &nbsp;}
@@ -290,7 +290,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-02-23 22:55</div>
+    <div style="float:right;">generated on 2024-02-24 18:32</div>
 </div>
 </body>
 </html>

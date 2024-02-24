@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
-  <title>Coverage Report > IBillHeaderRepo</title>
+  <title>Coverage Report > IPersonRepo</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -22,7 +22,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">com.magnetron.billing.repository</a>
 </div>
 
-<h1>Coverage Summary for Class: IBillHeaderRepo (com.magnetron.billing.repository)</h1>
+<h1>Coverage Summary for Class: IPersonRepo (com.magnetron.billing.repository)</h1>
 
 <table class="coverageStats">
 
@@ -30,13 +30,13 @@ Current scope:     <a href="../../index.html">all classes</a>
   <th class="name">Class</th>
 </tr>
   <tr>
-    <td class="name">IBillHeaderRepo$MockitoMock$HIRzQQzP</td>
+    <td class="name">IPersonRepo$MockitoMock$IrEYVq7s</td>
   </tr>
   <tr>
-    <td class="name">IBillHeaderRepo$MockitoMock$HIRzQQzP$auxiliary$FXFxX7hG</td>
+    <td class="name">IPersonRepo$MockitoMock$IrEYVq7s$auxiliary$aPTIt85I</td>
   </tr>
   <tr>
-    <td class="name">IBillHeaderRepo$MockitoMock$HIRzQQzP$auxiliary$y75qX00m</td>
+    <td class="name">IPersonRepo$MockitoMock$IrEYVq7s$auxiliary$uFJrwx3C</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -50,12 +50,14 @@ Current scope:     <a href="../../index.html">all classes</a>
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package com.magnetron.billing.repository;
 &nbsp;
-&nbsp;import com.magnetron.billing.repository.entity.BillHeader;
+&nbsp;import com.magnetron.billing.repository.entity.Person;
 &nbsp;import org.springframework.data.jpa.repository.JpaRepository;
 &nbsp;
-&nbsp;public interface IBillHeaderRepo extends JpaRepository&lt;BillHeader, Long&gt; {
+&nbsp;import java.util.Optional;
 &nbsp;
-&nbsp;    BillHeader findByNumber(Integer number);
+&nbsp;public interface IPersonRepo extends JpaRepository&lt;Person, Long&gt; {
+&nbsp;    public Optional&lt;Person&gt; findByDocumentNumber(String documentNumber);
+&nbsp;
 &nbsp;}
 </code>
 </pre>
@@ -80,7 +82,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-02-23 22:55</div>
+    <div style="float:right;">generated on 2024-02-24 18:32</div>
 </div>
 </body>
 </html>
